@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="utf-8"/>
+<title>عقد تقسيط - <%= customer.name %></title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+  body { font-family: 'IBM Plex Sans Arabic', sans-serif; color: #0b1c30; padding: 40px; line-height: 1.7; }
+  h1 { text-align: center; color: #004532; margin-bottom: 4px; }
+  .sub { text-align: center; color: #3f4944; margin-bottom: 28px; }
+  .box { border: 1px solid #bec9c2; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+  h2 { color: #004532; font-size: 18px; margin-top: 0; border-bottom: 1px solid #bec9c2; padding-bottom: 8px; }
+  table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+  th, td { border: 1px solid #bec9c2; padding: 8px 12px; text-align: right; }
+  th { background: #eff4ff; }
+  .muted { color: #3f4944; }
+  .footer { margin-top: 40px; text-align: center; color: #3f4944; font-size: 13px; }
+  .row { display: flex; justify-content: space-between; }
+  @media print { body { padding: 20px; } }
+</style>
+</head>
+<body>
+  <h1>عقد تقسيط جهاز</h1>
+  <p class="sub">نظام إدارة الأقساط - الإدارة المالية</p>
+
+  <div class="box">
+    <h2>بيانات العميل</h2>
+    <table>
+      <tr><td style="width:30%"><b>الاسم</b></td><td><%= customer.name %></td></tr>
+      <tr><td><b>رقم الهوية</b></td><td><%= customer.national_id || '—' %></td></tr>
+      <tr><td><b>رقم الجوال</b></td><td dir="ltr"><%= customer.phone %></td></tr>
+      <tr><td><b>العنوان</b></td><td><%= [customer.country, customer.city, customer.district, customer.street, customer.building].filter(Boolean).join(' - ') %></td></tr>
+    </table>
+  </div>
+
+  <div class="box">
+    <h2>بيانات الجهاز</h2>
+    <table>
+      <tr><td style="width:30%"><b>النوع</b></td><td><%= contract.device_name %></td></tr>
+      <tr><td><b>الموديل</b></td><td dir="ltr"><%= contract.device_model %></td></tr>
+      <tr><td><b>السعر الكامل</b></td><td><%= helpers.fmtMoney(contract.full_price, settings.currency) %></td></tr>
+      <tr><td><b>السعر بعد إضافة الفائدة (<%= contract.interest_rate %>%%)</b></td><td><%= helpers.fmtMoney(contract.total_payable, settings.currency) %></td></tr>
+      <tr><td><b>الدفعة الأولى (<%= contract.down_payment > 0 ? Math.round(contract.down_payment / contract.total_payable * 100) : 0 %>% من المبلغ بعد الفائدة)</b></td><td><%= helpers.fmtMoney(contract.down_payment, settings.currency) %></td></tr>
+      <tr><td><b>المبلغ الممول (المتبقي)</b></td><td><%= helpers.fmtMoney(contract.financed_amount, settings.currency) %></td></tr>
+      <tr><td><b>عدد الأقساط</b></td><td><%= contract.months %> أشهر</td></tr>
+      <tr><td><b>القسط الشهري</b></td><td><%= helpers.fmtMoney(contract.monthly_amount, settings.currency) %></td></tr>
+      <tr><td><b>تاريخ بداية العقد</b></td><td><%= helpers.fmtDate(contract.start_date) %></td></tr>
+    </table>
+  </div>
+
+  <div class="box">
+    <h2>جدول الأقساط</h2>
+    <table>
+      <thead>
+        <tr><th>رقم القسط</th><th>تاريخ الاستحقاق</th><th>المبلغ</th><th>الحالة</th></tr>
+      </thead>
+      <tbody>
+        <% installments.forEach(function(i) { %>
+        <tr>
+          <td><%= i.installment_number %></td>
+          <td><%= helpers.fmtDate(i.due_date) %></td>
+          <td><%= helpers.fmtMoney(i.amount, settings.currency) %></td>
+          <td><%= i.status === 'paid' ? 'مدفوع' : (i.status === 'overdue' ? 'متأخر' : 'غير مدفوع') %></td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="footer">تم إنشاء هذا العقد بواسطة نظام إدارة الأقساط بتاريخ <%= new Date().toLocaleDateString('ar-SA-u-ca-gregory', { year: 'numeric', month: 'long', day: 'numeric' }) %></p>
+  <script>window.print();</script>
+</body>
+</html>

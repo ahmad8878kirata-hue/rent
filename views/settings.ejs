@@ -1,0 +1,695 @@
+<%- include('partials/head', { title: 'الإعدادات' }) %>
+<body class="bg-background text-on-surface font-body-md overflow-hidden flex">
+<%- include('partials/sidebar', { active: active }) %>
+<div class="flex-1 flex flex-col h-screen md:pr-[280px]">
+  <%- include('partials/header', { pageTitle: 'إعدادات النظام' }) %>
+  <main class="flex-1 overflow-y-auto p-lg lg:p-xl bg-background">
+    <div class="max-w-5xl mx-auto space-y-xl">
+      <div class="flex justify-between items-end mb-lg border-b border-outline-variant pb-sm">
+        <div>
+          <h2 class="font-display-lg text-display-lg text-on-surface">إعدادات النظام</h2>
+          <p class="font-body-md text-body-md text-on-surface-variant mt-xs">إدارة المتغيرات المالية، الأجهزة، والمستخدمين.</p>
+        </div>
+        <button onclick="saveSettings()" class="bg-primary text-on-primary px-md py-sm rounded-lg font-label-sm text-label-sm hover:opacity-90 transition-all shadow-sm">حفظ التغييرات</button>
+      </div>
+
+      <!-- Bento Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-lg">
+        <!-- Financial Constants -->
+        <div class="md:col-span-4 bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm">
+          <div class="flex items-center gap-sm mb-md border-b border-outline-variant pb-sm">
+            <span class="material-symbols-outlined text-primary">percent</span>
+            <h3 class="font-title-sm text-title-sm text-on-surface">الثوابت المالية</h3>
+          </div>
+          <div class="space-y-md">
+            <div>
+              <label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs" for="interestRate">نسبة الفائدة الافتراضية (%)</label>
+              <input class="w-full bg-surface-container-low border border-outline-variant rounded-lg py-sm px-md font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" id="interestRate" type="number" value="<%= settings.default_interest_rate %>"/>
+              <p class="font-caption-xs text-caption-xs text-secondary mt-xs">تطبق على العقود الجديدة ما لم يتم تعديلها يدوياً.</p>
+            </div>
+            <div>
+              <label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs" for="defaultMonths">عدد الأشهر الافتراضي</label>
+              <input class="w-full bg-surface-container-low border border-outline-variant rounded-lg py-sm px-md font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" id="defaultMonths" type="number" value="<%= settings.default_months %>"/>
+            </div>
+            <div>
+              <label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs" for="downPercent">نسبة الدفعة المقدمة (%)</label>
+              <input class="w-full bg-surface-container-low border border-outline-variant rounded-lg py-sm px-md font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" id="downPercent" type="number" value="<%= settings.down_payment_percent %>"/>
+            </div>
+            <div>
+              <label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs" for="currency">العملة</label>
+              <input class="w-full bg-surface-container-low border border-outline-variant rounded-lg py-sm px-md font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" id="currency" type="text" value="<%= settings.currency %>"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- Device Management -->
+        <div class="md:col-span-8 bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm flex flex-col">
+          <div class="flex items-center justify-between mb-md border-b border-outline-variant pb-sm">
+            <div class="flex items-center gap-sm">
+              <span class="material-symbols-outlined text-primary">devices</span>
+              <h3 class="font-title-sm text-title-sm text-on-surface">أنواع الأجهزة</h3>
+            </div>
+          </div>
+          <div class="flex-1 overflow-y-auto max-h-[300px] pr-sm custom-scrollbar">
+            <ul id="deviceList" class="space-y-sm">
+              <% deviceTypes.forEach(function(t) { %>
+              <li class="flex items-center justify-between p-sm bg-surface-container-low rounded-lg border border-outline-variant/50 hover:border-outline-variant transition-colors group">
+                <span class="font-body-md text-body-md text-on-surface"><%= t.name %></span>
+                <button data-action="delete-device" data-id="<%= t.id %>" class="text-error opacity-0 group-hover:opacity-100 transition-opacity p-xs hover:bg-error-container rounded">
+                  <span class="material-symbols-outlined text-[18px]">delete</span>
+                </button>
+              </li>
+              <% }); %>
+            </ul>
+            <li class="flex items-center gap-sm p-sm bg-surface-container rounded-lg border border-primary border-dashed mt-sm">
+              <input id="newDeviceName" class="flex-1 bg-transparent border-none focus:ring-0 p-0 font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant" placeholder="اسم الجهاز الجديد..." type="text"/>
+              <button onclick="addDevice()" class="text-primary hover:bg-surface-variant p-xs rounded transition-colors">
+                <span class="material-symbols-outlined text-[20px]">check</span>
+              </button>
+            </li>
+          </div>
+        </div>
+
+        <!-- Catalog Devices (Eligible for Installment) -->
+        <div class="md:col-span-12 bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden">
+          <div class="p-md border-b border-outline-variant flex items-center justify-between bg-surface-container-low/50">
+            <div class="flex items-center gap-sm">
+              <span class="material-symbols-outlined text-primary">inventory_2</span>
+              <h3 class="font-title-sm text-title-sm text-on-surface">الأجهزة المتاحة للتقسيط</h3>
+            </div>
+            <button onclick="openDeviceModal(null)" class="border border-outline-variant bg-surface-container-lowest text-on-surface px-md py-xs rounded-lg font-label-sm text-label-sm hover:bg-surface-container-low transition-colors flex items-center gap-xs">
+              <span class="material-symbols-outlined text-[18px]">add_circle</span>
+              إضافة جهاز جديد
+            </button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-right">
+              <thead class="bg-surface-container font-label-sm text-label-sm text-on-surface-variant border-b border-outline-variant">
+                <tr>
+                  <th class="p-sm font-medium">الجهاز</th>
+                  <th class="p-sm font-medium">الصور</th>
+                  <th class="p-sm font-medium">الفئة</th>
+                  <th class="p-sm font-medium">السعر الكامل</th>
+                  <th class="p-sm font-medium">الدفعة الأولى</th>
+                  <th class="p-sm font-medium">القسط الشهري</th>
+                  <th class="p-sm font-medium">الأشهر</th>
+                  <th class="p-sm font-medium">المخزون</th>
+                  <th class="p-sm font-medium text-center">الإجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="catalogDevicesBody" class="font-body-md text-body-md divide-y divide-outline-variant">
+                <% catalogDevices.forEach(function(d) { %>
+                <tr id="device-<%= d.id %>" class="hover:bg-surface-container-lowest transition-colors">
+                  <td class="p-sm">
+                    <div class="flex items-center gap-sm">
+                      <div class="w-10 h-10 rounded-lg bg-gradient-to-br <%= d.color %> flex items-center justify-center text-white flex-shrink-0">
+                        <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;"><%= d.icon %></span>
+                      </div>
+                      <div>
+                        <span class="block font-label-sm text-label-sm text-on-surface"><%= d.name %><% if (d.featured) { %> <span class="material-symbols-outlined text-[14px] text-amber-500 align-middle">star</span><% } %></span>
+                        <span class="font-caption-xs text-caption-xs text-on-surface-variant"><%= d.brand %></span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="p-sm">
+                    <% if (d.images && d.images.length) { %>
+                    <div class="flex items-center gap-xs">
+                      <img src="<%= d.images[0].url %>" alt="<%= d.name %>" class="w-9 h-9 rounded object-cover border border-outline-variant"/>
+                      <span class="inline-flex items-center gap-xs font-caption-xs text-caption-xs text-on-surface-variant"><span class="material-symbols-outlined text-[14px]">photo_library</span><%= d.images.length %></span>
+                    </div>
+                    <% } else { %>
+                    <span class="font-caption-xs text-caption-xs text-secondary">بدون صور</span>
+                    <% } %>
+                  </td>
+                  <td class="p-sm text-on-surface-variant"><%= d.category || '—' %></td>
+                  <td class="p-sm dir-ltr text-right"><%= helpers.fmtMoney(d.price, settings.currency) %></td>
+                  <td class="p-sm dir-ltr text-right"><%= helpers.fmtMoney(d.downPayment, settings.currency) %></td>
+                  <td class="p-sm dir-ltr text-right text-primary font-semibold"><%= helpers.fmtMoney(d.monthlyAmount, settings.currency) %></td>
+                  <td class="p-sm text-on-surface-variant"><%= d.months %></td>
+                  <td class="p-sm">
+                    <% if (d.stock > 0) { %>
+                    <span class="inline-flex items-center gap-1 text-[#059669] text-sm"><span class="w-2 h-2 rounded-full bg-[#059669]"></span> <%= d.stock %></span>
+                    <% } else { %>
+                    <span class="inline-flex items-center gap-1 text-secondary text-sm"><span class="w-2 h-2 rounded-full bg-secondary"></span> نفد</span>
+                    <% } %>
+                  </td>
+                  <td class="p-sm text-center">
+                    <div class="flex items-center justify-center gap-xs">
+                      <button data-action="open-device" data-id="<%= d.id %>" class="text-secondary hover:text-primary transition-colors p-xs" title="تعديل"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+                      <button data-action="delete-device-item" data-id="<%= d.id %>" class="text-secondary hover:text-error transition-colors p-xs" title="حذف"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+                    </div>
+                  </td>
+                </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+          <div class="p-sm border-t border-outline-variant bg-surface-container-low/50 flex justify-between items-center">
+            <span class="font-caption-xs text-caption-xs text-on-surface-variant">تظهر هذه الأجهزة في الصفحة الرئيسية للموقع مع خطط التقسيط الخاصة بها.</span>
+            <button onclick="openDeviceModal(null)" class="text-primary font-label-sm text-label-sm hover:underline">+ إضافة جهاز</button>
+          </div>
+        </div>
+
+        <!-- User Management -->
+        <div class="md:col-span-12 bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden">
+          <div class="p-md border-b border-outline-variant flex items-center justify-between bg-surface-container-low/50">
+            <div class="flex items-center gap-sm">
+              <span class="material-symbols-outlined text-primary">manage_accounts</span>
+              <h3 class="font-title-sm text-title-sm text-on-surface">إدارة المستخدمين والصلاحيات</h3>
+            </div>
+            <button onclick="openUserModal(null)" class="border border-outline-variant bg-surface-container-lowest text-on-surface px-md py-xs rounded-lg font-label-sm text-label-sm hover:bg-surface-container-low transition-colors flex items-center gap-xs">
+              <span class="material-symbols-outlined text-[18px]">person_add</span>
+              مستخدم جديد
+            </button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-right">
+              <thead class="bg-surface-container font-label-sm text-label-sm text-on-surface-variant border-b border-outline-variant">
+                <tr>
+                  <th class="p-sm font-medium">الاسم</th>
+                  <th class="p-sm font-medium">البريد الإلكتروني</th>
+                  <th class="p-sm font-medium">الدور</th>
+                  <th class="p-sm font-medium">الحالة</th>
+                  <th class="p-sm font-medium text-center">الإجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="usersBody" class="font-body-md text-body-md divide-y divide-outline-variant">
+                <% users.forEach(function(u) { %>
+                <tr id="user-<%= u.id %>" class="hover:bg-surface-container-lowest transition-colors">
+                  <td class="p-sm flex items-center gap-sm">
+                    <div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm"><%= u.name.charAt(0) %></div>
+                    <%= u.name %>
+                  </td>
+                  <td class="p-sm text-on-surface-variant"><%= u.email %></td>
+                  <td class="p-sm"><span class="bg-primary/10 text-primary px-xs py-xs rounded text-xs font-medium"><%= u.role %></span></td>
+                  <td class="p-sm">
+                    <% if (u.status === 'active') { %>
+                    <span class="inline-flex items-center gap-1 text-[#059669] text-sm"><span class="w-2 h-2 rounded-full bg-[#059669]"></span> نشط</span>
+                    <% } else { %>
+                    <span class="inline-flex items-center gap-1 text-secondary text-sm"><span class="w-2 h-2 rounded-full bg-secondary"></span> غير نشط</span>
+                    <% } %>
+                  </td>
+                  <td class="p-sm text-center">
+                    <div class="flex items-center justify-center gap-xs">
+                      <button data-action="open-user" data-id="<%= u.id %>" class="text-secondary hover:text-primary transition-colors p-xs"><span class="material-symbols-outlined text-[20px]">edit</span></button>
+                      <button data-action="delete-user" data-id="<%= u.id %>" class="text-secondary hover:text-error transition-colors p-xs"><span class="material-symbols-outlined text-[20px]">delete</span></button>
+                    </div>
+                  </td>
+                </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Database Backup & Restore -->
+        <div class="md:col-span-12 bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden">
+          <div class="p-md border-b border-outline-variant flex items-center justify-between bg-surface-container-low/50">
+            <div class="flex items-center gap-sm">
+              <span class="material-symbols-outlined text-primary">backup</span>
+              <h3 class="font-title-sm text-title-sm text-on-surface">النسخ الاحتياطي لقاعدة البيانات</h3>
+            </div>
+          </div>
+          <div class="p-md grid grid-cols-1 md:grid-cols-2 gap-md">
+            <div class="bg-surface-container rounded-lg p-md border border-outline-variant/50 flex flex-col">
+              <span class="font-label-sm text-label-sm text-on-surface block mb-xs">تصدير نسخة احتياطية</span>
+              <p class="font-caption-xs text-caption-xs text-secondary mb-md">تنزيل نسخة كاملة من قاعدة البيانات (ملف .db) لتخزينها في مكان آمن.</p>
+              <a href="/api/database/export" class="inline-flex items-center justify-center gap-xs bg-primary text-on-primary px-md py-sm rounded-lg font-label-sm text-label-sm hover:opacity-90 transition-opacity w-fit">
+                <span class="material-symbols-outlined text-[18px]">download</span>
+                تصدير نسخة احتياطية
+              </a>
+            </div>
+            <div class="bg-surface-container rounded-lg p-md border border-outline-variant/50 flex flex-col">
+              <span class="font-label-sm text-label-sm text-on-surface block mb-xs">استيراد نسخة احتياطية</span>
+              <p class="font-caption-xs text-caption-xs text-secondary mb-md">استعادة نسخة من ملف قاعدة بيانات (db / sqlite / sqlite3). يتم إنشاء نسخة احتياطية تلقائية من البيانات الحالية قبل الاستعادة.</p>
+              <div class="flex items-center gap-sm flex-wrap">
+                <input id="dbImportFile" type="file" accept=".db,.sqlite,.sqlite3,.db3" class="text-sm text-on-surface-variant file:mr-2 file:px-3 file:py-1 file:rounded-lg file:border-0 file:bg-surface-container-highest file:text-on-surface file:cursor-pointer"/>
+                <button onclick="importDatabase()" class="inline-flex items-center gap-xs border border-outline-variant text-on-surface px-md py-sm rounded-lg font-label-sm text-label-sm hover:bg-surface-container-low transition-colors">
+                  <span class="material-symbols-outlined text-[18px]">upload</span>
+                  استيراد
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Device Modal -->
+<div id="deviceModal" class="hidden fixed inset-0 z-[90] flex items-center justify-center bg-black/40 p-4">
+  <div class="bg-surface-container-lowest rounded-xl shadow-xl w-full max-w-2xl p-lg max-h-[92vh] overflow-y-auto custom-scrollbar">
+    <h3 class="font-title-sm text-title-sm text-on-surface mb-md" id="deviceModalTitle">إضافة جهاز جديد</h3>
+    <input type="hidden" id="deviceModalId"/>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+      <div class="md:col-span-2">
+        <label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">اسم الجهاز <span class="text-error">*</span></label>
+        <input id="deviceName" class="w-full bg-surface-container-low border border-outline-variant rounded-lg py-sm px-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" type="text" placeholder="مثال: iPhone 16 Pro"/>
+      </div>
+      <div>
+        <label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">العلامة التجارية</label>
+        <input id="deviceBrand" class="w-full bg-surface-container-low border border-outline-variant rounded-lg py-sm px-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" type="text" placeholder="مثال: Apple"/>
+      </div>
+      <div>
+        <label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">الفئة</label>
+        <select id="deviceCategory" class="w-full bg-surface-container-low border border-outline-variant rounded-lg py-sm px-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">
+          <option value="هاتف ذكي">هاتف ذكي</option>
+          <option value="حاسوب محمول">حاسوب محمول</option>
+          <option value="جهاز لوحي">جهاز لوحي</option>
+          <option value="ساعة ذكية">ساعة ذكية</option>
+          <option value="سماعات">سماعات</option>
+          <option value="شاشة">شاشة</option>
+          <option value="أخرى">أخرى</option>
+        </select>
+      </div>
+      <div class="md:col-span-2">
+        <label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">الوصف</label>
+        <textarea id="deviceDescription" rows="2" class="w-full bg-surface-container-low border border-outline-variant rounded-lg py-sm px-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all resize-none" placeholder="وصف مختصر يظهر للعميل على الصفحة الرئيسية"></textarea>
+      </div>
+      <div>
+        <label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">الأيقونة</label>
+        <select id="deviceIcon" class="w-full bg-surface-container-low border border-outline-variant rounded-lg py-sm px-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">
+          <option value="smartphone">هاتف</option>
+          <option value="laptop_mac">حاسوب</option>
+          <option value="tablet_mac">جهاز لوحي</option>
+          <option value="watch">ساعة</option>
+          <option value="headphones">سماعات</option>
+          <option value="tv">تلفاز</option>
+          <option value="videogame_asset">ألعاب</option>
+          <option value="speaker">مكبر صوت</option>
+        </select>
+      </div>
+      <div>
+        <label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">اللون (خلفية البطاقة)</label>
+        <select id="deviceColor" class="w-full bg-surface-container-low border border-outline-variant rounded-lg py-sm px-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">
+          <option value="from-slate-700 to-slate-900">رمادي غامق</option>
+          <option value="from-indigo-500 to-purple-700">بنفسجي</option>
+          <option value="from-sky-500 to-blue-700">أزرق</option>
+          <option value="from-emerald-500 to-teal-600">أخضر زمردي</option>
+          <option value="from-fuchsia-500 to-pink-600">وردي</option>
+          <option value="from-amber-500 to-orange-600">برتقالي</option>
+          <option value="from-cyan-500 to-teal-600">فيروزي</option>
+          <option value="from-zinc-500 to-zinc-800">زنك</option>
+        </select>
+      </div>
+      <div>
+        <label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">السعر الكامل (بالعملة) <span class="text-error">*</span></label>
+        <input id="devicePrice" class="w-full bg-surface-container-low border border-outline-variant rounded-lg py-sm px-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" type="text" inputmode="decimal" autocomplete="off"/>
+      </div>
+      <div>
+        <label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">نسبة الفائدة (%) <span class="text-error">*</span></label>
+        <input id="deviceInterest" class="w-full bg-surface-container-low border border-outline-variant rounded-lg py-sm px-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" type="text" inputmode="decimal" autocomplete="off" value="<%= settings.default_interest_rate %>"/>
+      </div>
+      <div>
+        <label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">عدد الأشهر <span class="text-error">*</span></label>
+        <input id="deviceMonths" class="w-full bg-surface-container-low border border-outline-variant rounded-lg py-sm px-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" type="text" inputmode="numeric" autocomplete="off" value="<%= settings.default_months %>"/>
+      </div>
+      <div>
+        <label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">نسبة الدفعة الأولى (%) <span class="text-error">*</span></label>
+        <input id="deviceDownPercent" class="w-full bg-surface-container-low border border-outline-variant rounded-lg py-sm px-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" type="text" inputmode="decimal" autocomplete="off" value="<%= settings.down_payment_percent %>"/>
+      </div>
+      <div>
+        <label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">عدد القطع في المخزون</label>
+        <input id="deviceStock" class="w-full bg-surface-container-low border border-outline-variant rounded-lg py-sm px-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" type="text" inputmode="numeric" autocomplete="off" value="0"/>
+      </div>
+      <div class="md:col-span-2">
+        <label class="flex items-center gap-sm cursor-pointer bg-surface-container rounded-lg p-sm font-label-sm text-label-sm text-on-surface">
+          <input id="deviceFeatured" type="checkbox" class="text-primary focus:ring-primary h-4 w-4 border-outline-variant"/>
+          جهاز مميز (يظهر شارة "الأكثر طلباً" في الموقع)
+        </label>
+      </div>
+      <div class="md:col-span-2">
+        <label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">صور الجهاز (يمكن إضافة أكثر من صورة)</label>
+        <div class="flex items-center gap-sm bg-surface-container rounded-lg border border-outline-variant p-sm cursor-pointer hover:border-primary transition-colors" onclick="document.getElementById('deviceImagesInput').click()">
+          <span class="material-symbols-outlined text-primary">add_photo_alternate</span>
+          <span class="font-body-md text-body-md text-on-surface-variant">اضغط لاختيار صور الجهاز من جهازك</span>
+          <input id="deviceImagesInput" type="file" accept="image/*" multiple class="hidden" onchange="onDeviceImagesSelected(this)"/>
+        </div>
+        <p class="font-caption-xs text-caption-xs text-secondary mt-xs">يُسمح بصور PNG و JPG و GIF و WebP بحد أقصى 8 صور.</p>
+        <div id="deviceExistingImages" class="flex flex-wrap gap-sm mt-sm"></div>
+        <div id="deviceImagesPreview" class="flex flex-wrap gap-sm mt-sm"></div>
+      </div>
+      <div class="md:col-span-2 bg-primary/5 border border-primary/20 rounded-lg p-sm">
+        <p class="font-caption-xs text-caption-xs text-on-surface-variant mb-xs">معاينة خطة التقسيط:</p>
+        <div class="flex flex-wrap gap-md font-caption-xs text-caption-xs">
+          <span>دفعة أولى: <b class="text-on-surface" id="deviceCalcDown">—</b></span>
+          <span>المتبقي: <b class="text-on-surface" id="deviceCalcFinanced">—</b></span>
+          <span>قسط شهري: <b class="text-on-surface text-primary" id="deviceCalcMonthly">—</b></span>
+        </div>
+      </div>
+    </div>
+    <div class="flex justify-end gap-sm mt-lg pt-md border-t border-outline-variant">
+      <button onclick="closeDeviceModal()" class="px-lg py-sm border border-outline text-secondary rounded-lg font-label-sm text-label-sm hover:bg-surface-container transition-colors">إلغاء</button>
+      <button onclick="saveDevice()" class="px-lg py-sm bg-primary text-on-primary rounded-lg font-label-sm text-label-sm font-bold shadow-sm hover:opacity-90 transition-opacity">حفظ الجهاز</button>
+    </div>
+  </div>
+</div>
+
+<!-- User Modal -->
+<div id="userModal" class="hidden fixed inset-0 z-[90] flex items-center justify-center bg-black/40 p-4">
+  <div class="bg-surface-container-lowest rounded-xl shadow-xl w-full max-w-md p-lg">
+    <h3 class="font-title-sm text-title-sm text-on-surface mb-md" id="userModalTitle">مستخدم جديد</h3>
+    <input type="hidden" id="userModalId"/>
+    <div class="space-y-md">
+      <div>
+        <label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">الاسم</label>
+        <input id="userName" class="w-full bg-surface-container-low border border-outline-variant rounded-lg py-sm px-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" type="text"/>
+      </div>
+      <div>
+        <label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">البريد الإلكتروني</label>
+        <input id="userEmail" class="w-full bg-surface-container-low border border-outline-variant rounded-lg py-sm px-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" dir="ltr" type="email"/>
+      </div>
+      <div>
+        <label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">الدور</label>
+        <select id="userRole" class="w-full bg-surface-container-low border border-outline-variant rounded-lg py-sm px-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">
+          <option value="مدير نظام">مدير نظام</option>
+          <option value="موظف مبيعات">موظف مبيعات</option>
+          <option value="محاسب">محاسب</option>
+        </select>
+      </div>
+      <div>
+        <label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">الحالة</label>
+        <select id="userStatus" class="w-full bg-surface-container-low border border-outline-variant rounded-lg py-sm px-md font-body-md text-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">
+          <option value="active">نشط</option>
+          <option value="inactive">غير نشط</option>
+        </select>
+      </div>
+    </div>
+    <div class="flex justify-end gap-sm mt-lg pt-md border-t border-outline-variant">
+      <button onclick="closeUserModal()" class="px-lg py-sm border border-outline text-secondary rounded-lg font-label-sm text-label-sm hover:bg-surface-container transition-colors">إلغاء</button>
+      <button onclick="saveUser()" class="px-lg py-sm bg-primary text-on-primary rounded-lg font-label-sm text-label-sm font-bold shadow-sm hover:opacity-90 transition-opacity">حفظ</button>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/scripts') %>
+<script>
+  var usersData = <%- JSON.stringify(users).replace(new RegExp('<', 'g'), '\\u003c') %>;
+
+  function saveSettings() {
+    sanitizeNumber(document.getElementById('interestRate'));
+    sanitizeNumber(document.getElementById('defaultMonths'));
+    sanitizeNumber(document.getElementById('downPercent'));
+    fetch('/api/settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        default_interest_rate: parseFloat(document.getElementById('interestRate').value),
+        default_months: parseInt(document.getElementById('defaultMonths').value, 10),
+        down_payment_percent: parseFloat(document.getElementById('downPercent').value),
+        currency: document.getElementById('currency').value
+      })
+    }).then(function (r) { return r.json(); }).then(function (j) {
+      if (j.ok) { showToast('تم حفظ التغييرات بنجاح'); }
+      else { showToast(j.error || 'حدث خطأ', 'error'); }
+    });
+  }
+
+  function addDevice() {
+    var name = document.getElementById('newDeviceName').value.trim();
+    if (!name) { showToast('أدخل اسم الجهاز', 'error'); return; }
+    fetch('/api/device-types', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name })
+    }).then(function (r) { return r.json(); }).then(function (j) {
+      if (j.ok) { window.location.reload(); }
+      else { showToast(j.error || 'حدث خطأ', 'error'); }
+    });
+  }
+
+  function deleteDevice(id) {
+    if (!confirm('هل تريد حذف هذا النوع؟')) return;
+    fetch('/api/device-types/' + id, { method: 'DELETE' })
+      .then(function (r) { return r.json(); }).then(function (j) {
+        if (j.ok) { window.location.reload(); }
+      });
+  }
+
+  var catalogDevicesData = <%- JSON.stringify(catalogDevices).replace(new RegExp('<', 'g'), '\\u003c') %>;
+  var deviceCurrency = '<%= settings.currency %>';
+  var deviceImagesToUpload = [];
+
+  function renderDeviceImagesPreview() {
+    var box = document.getElementById('deviceImagesPreview');
+    box.innerHTML = '';
+    deviceImagesToUpload.forEach(function (f, i) {
+      var url = URL.createObjectURL(f);
+      box.insertAdjacentHTML('beforeend',
+        '<div class="relative w-20 h-20 rounded-lg overflow-hidden border border-outline-variant">' +
+        '<img src="' + url + '" class="w-full h-full object-cover" alt="صورة جديدة"/>' +
+        '<button type="button" data-index="' + i + '" onclick="removeDeviceImage(this)" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/50 hover:bg-black/70 text-white flex items-center justify-center"><span class="material-symbols-outlined text-[14px]">close</span></button>' +
+        '</div>');
+    });
+  }
+
+  function onDeviceImagesSelected(input) {
+    deviceImagesToUpload = Array.prototype.slice.call(input.files || []);
+    renderDeviceImagesPreview();
+  }
+
+  function removeDeviceImage(btn) {
+    var i = parseInt(btn.getAttribute('data-index'), 10);
+    if (isNaN(i)) return;
+    deviceImagesToUpload.splice(i, 1);
+    renderDeviceImagesPreview();
+  }
+
+  function renderDeviceExistingImages() {
+    var box = document.getElementById('deviceExistingImages');
+    box.innerHTML = '';
+    var currentDeviceId = parseInt(document.getElementById('deviceModalId').value, 10) || 0;
+    var d = catalogDevicesData.find(function (x) { return x.id === currentDeviceId; });
+    if (!d || !d.images || !d.images.length) return;
+    d.images.forEach(function (img) {
+      box.insertAdjacentHTML('beforeend',
+        '<div class="relative w-20 h-20 rounded-lg overflow-hidden border border-outline-variant">' +
+        '<img src="' + img.url + '" class="w-full h-full object-cover" alt="صورة الجهاز"/>' +
+        '<button type="button" onclick="deleteDeviceImage(' + currentDeviceId + ',' + img.id + ')" class="absolute top-1 right-1 w-5 h-5 rounded-full bg-error hover:bg-[#93000a] text-white flex items-center justify-center" title="حذف الصورة"><span class="material-symbols-outlined text-[14px]">delete</span></button>' +
+        '</div>');
+    });
+  }
+
+  function deleteDeviceImage(deviceId, imgId) {
+    if (!confirm('هل تريد حذف هذه الصورة؟')) return;
+    fetch('/api/catalog-devices/' + deviceId + '/images/' + imgId, { method: 'DELETE' })
+      .then(function (r) { return r.json(); }).then(function (j) {
+        if (j.ok) { showToast('تم حذف الصورة'); window.location.reload(); }
+        else { showToast(j.error || 'حدث خطأ', 'error'); }
+      });
+  }
+
+  function recalcDeviceCalc() {
+    var price = parseFloat(document.getElementById('devicePrice').value) || 0;
+    var interest = parseFloat(document.getElementById('deviceInterest').value) || 0;
+    var months = parseInt(document.getElementById('deviceMonths').value, 10) || 0;
+    var downPct = parseFloat(document.getElementById('deviceDownPercent').value) || 0;
+    var total = price * (1 + interest / 100);
+    var down = total * downPct / 100;
+    var monthly = months > 0 ? (total - down) / months : 0;
+    document.getElementById('deviceCalcDown').textContent = formatMoney(down) + ' ' + deviceCurrency;
+    document.getElementById('deviceCalcFinanced').textContent = formatMoney(total - down) + ' ' + deviceCurrency;
+    document.getElementById('deviceCalcMonthly').textContent = formatMoney(monthly) + ' ' + deviceCurrency;
+  }
+  ['devicePrice', 'deviceInterest', 'deviceMonths', 'deviceDownPercent', 'deviceStock'].forEach(function (id) {
+    var el = document.getElementById(id);
+    el.addEventListener('input', function () { sanitizeNumber(el); recalcDeviceCalc(); });
+    el.addEventListener('change', function () { sanitizeNumber(el); recalcDeviceCalc(); });
+  });
+
+  function openDeviceModal(id) {
+    var modal = document.getElementById('deviceModal');
+    document.getElementById('deviceModalId').value = id || '';
+    deviceImagesToUpload = [];
+    document.getElementById('deviceImagesInput').value = '';
+    document.getElementById('deviceImagesPreview').innerHTML = '';
+    if (id) {
+      var d = catalogDevicesData.find(function (x) { return x.id === id; });
+      if (!d) return;
+      document.getElementById('deviceModalTitle').textContent = 'تعديل جهاز';
+      document.getElementById('deviceName').value = d.name;
+      document.getElementById('deviceBrand').value = d.brand;
+      document.getElementById('deviceCategory').value = d.category || 'أخرى';
+      document.getElementById('deviceDescription').value = d.description;
+      document.getElementById('deviceIcon').value = d.icon;
+      document.getElementById('deviceColor').value = d.color;
+      document.getElementById('devicePrice').value = d.price;
+      document.getElementById('deviceInterest').value = d.interest_rate;
+      document.getElementById('deviceMonths').value = d.months;
+      document.getElementById('deviceDownPercent').value = d.down_payment_percent;
+      document.getElementById('deviceStock').value = d.stock;
+      document.getElementById('deviceFeatured').checked = !!d.featured;
+    } else {
+      document.getElementById('deviceModalTitle').textContent = 'إضافة جهاز جديد';
+      document.getElementById('deviceName').value = '';
+      document.getElementById('deviceBrand').value = '';
+      document.getElementById('deviceCategory').value = 'هاتف ذكي';
+      document.getElementById('deviceDescription').value = '';
+      document.getElementById('deviceIcon').value = 'smartphone';
+      document.getElementById('deviceColor').value = 'from-slate-700 to-slate-900';
+      document.getElementById('devicePrice').value = '';
+      document.getElementById('deviceInterest').value = '<%= settings.default_interest_rate %>';
+      document.getElementById('deviceMonths').value = '<%= settings.default_months %>';
+      document.getElementById('deviceDownPercent').value = '<%= settings.down_payment_percent %>';
+      document.getElementById('deviceStock').value = '0';
+      document.getElementById('deviceFeatured').checked = false;
+    }
+    recalcDeviceCalc();
+    renderDeviceExistingImages();
+    modal.classList.remove('hidden');
+  }
+
+  function closeDeviceModal() {
+    document.getElementById('deviceModal').classList.add('hidden');
+  }
+
+  function saveDevice() {
+    var id = document.getElementById('deviceModalId').value;
+    var deviceModalInputs = ['devicePrice', 'deviceInterest', 'deviceMonths', 'deviceDownPercent', 'deviceStock'];
+    deviceModalInputs.forEach(function (i) { sanitizeNumber(document.getElementById(i)); });
+    var payload = {
+      name: document.getElementById('deviceName').value.trim(),
+      brand: document.getElementById('deviceBrand').value.trim(),
+      category: document.getElementById('deviceCategory').value,
+      description: document.getElementById('deviceDescription').value.trim(),
+      icon: document.getElementById('deviceIcon').value,
+      color: document.getElementById('deviceColor').value,
+      price: parseFloat(document.getElementById('devicePrice').value),
+      interest_rate: parseFloat(document.getElementById('deviceInterest').value),
+      months: parseInt(document.getElementById('deviceMonths').value, 10),
+      down_payment_percent: parseFloat(document.getElementById('deviceDownPercent').value),
+      stock: parseInt(document.getElementById('deviceStock').value, 10) || 0,
+      featured: document.getElementById('deviceFeatured').checked ? 1 : 0
+    };
+    if (!payload.name) { showToast('أدخل اسم الجهاز', 'error'); return; }
+    var url = id ? '/api/catalog-devices/' + id : '/api/catalog-devices';
+    var method = id ? 'PUT' : 'POST';
+    fetch(url, {
+      method: method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, body: j }; }); })
+      .then(function (res) {
+        if (!res.ok) { showToast(res.body.error || 'حدث خطأ', 'error'); return null; }
+        var deviceId = res.body.id;
+        if (!deviceImagesToUpload.length) return { deviceId: deviceId, imagesOk: true };
+        var fd = new FormData();
+        deviceImagesToUpload.forEach(function (f) { fd.append('images', f); });
+        return fetch('/api/catalog-devices/' + deviceId + '/images', { method: 'POST', body: fd })
+          .then(function (r2) { return r2.json(); })
+          .then(function (j2) {
+            if (j2.ok) return { deviceId: deviceId, imagesOk: true };
+            showToast(j2.error || 'حدث خطأ في رفع الصور', 'error');
+            return { deviceId: deviceId, imagesOk: false };
+          });
+      })
+      .then(function (done) {
+        if (done === null) return;
+        if (done.imagesOk) {
+          showToast('تم حفظ الجهاز بنجاح');
+          window.location.reload();
+        } else {
+          showToast('تم حفظ بيانات الجهاز، لكن فشل رفع الصور. أزل الصور المرفوضة وحاول الحفظ مجدداً.', 'error');
+        }
+      })
+      .catch(function () { showToast('حدث خطأ في الاتصال', 'error'); });
+  }
+
+  function deleteDeviceItem(id) {
+    if (!confirm('هل تريد حذف هذا الجهاز من قائمة الأجهزة المتاحة للتقسيط؟')) return;
+    fetch('/api/catalog-devices/' + id, { method: 'DELETE' })
+      .then(function (r) { return r.json(); }).then(function (j) {
+        if (j.ok) { showToast('تم حذف الجهاز'); window.location.reload(); }
+        else { showToast(j.error || 'حدث خطأ', 'error'); }
+      });
+  }
+
+  function openUserModal(id) {
+    var modal = document.getElementById('userModal');
+    document.getElementById('userModalId').value = id || '';
+    if (id) {
+      var u = usersData.find(function (x) { return x.id === id; });
+      if (!u) return;
+      document.getElementById('userModalTitle').textContent = 'تعديل مستخدم';
+      document.getElementById('userName').value = u.name;
+      document.getElementById('userEmail').value = u.email;
+      document.getElementById('userEmail').disabled = true;
+      document.getElementById('userRole').value = u.role;
+      document.getElementById('userStatus').value = u.status;
+    } else {
+      document.getElementById('userModalTitle').textContent = 'مستخدم جديد';
+      document.getElementById('userName').value = '';
+      document.getElementById('userEmail').value = '';
+      document.getElementById('userEmail').disabled = false;
+      document.getElementById('userRole').value = 'موظف مبيعات';
+      document.getElementById('userStatus').value = 'active';
+    }
+    modal.classList.remove('hidden');
+  }
+
+  function closeUserModal() {
+    document.getElementById('userModal').classList.add('hidden');
+  }
+
+  function saveUser() {
+    var id = document.getElementById('userModalId').value;
+    var payload = {
+      name: document.getElementById('userName').value.trim(),
+      email: document.getElementById('userEmail').value.trim(),
+      role: document.getElementById('userRole').value,
+      status: document.getElementById('userStatus').value
+    };
+    var url = id ? '/api/users/' + id : '/api/users';
+    var method = id ? 'PUT' : 'POST';
+    fetch(url, {
+      method: method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function (r) { return r.json(); }).then(function (j) {
+      if (j.ok) { window.location.reload(); }
+      else { showToast(j.error || 'حدث خطأ', 'error'); }
+    });
+  }
+
+  function deleteUser(id) {
+    if (!confirm('هل تريد حذف هذا المستخدم؟')) return;
+    fetch('/api/users/' + id, { method: 'DELETE' })
+      .then(function (r) { return r.json(); }).then(function (j) {
+        if (j.ok) { window.location.reload(); }
+      });
+  }
+
+  function importDatabase() {
+    var input = document.getElementById('dbImportFile');
+    if (!input.files || !input.files.length) { showToast('اختر ملف قاعدة بيانات أولاً', 'error'); return; }
+    if (!confirm('سيتم استبدال قاعدة البيانات الحالية بملف النسخة المحدد.\nسيتم إنشاء نسخة احتياطية تلقائية من البيانات الحالية قبل الاستعادة.\nهل تريد المتابعة؟')) return;
+    var fd = new FormData();
+    fd.append('dbFile', input.files[0]);
+    fetch('/api/database/import', { method: 'POST', body: fd })
+      .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, body: j }; }); })
+      .then(function (res) {
+        if (res.ok) {
+          showToast('تم استعادة قاعدة البيانات بنجاح. جاري تحديث الصفحة...');
+          setTimeout(function () { window.location.reload(); }, 1200);
+        } else {
+          showToast(res.body.error || 'حدث خطأ', 'error');
+        }
+      })
+      .catch(function () { showToast('حدث خطأ في الاتصال', 'error'); });
+  }
+
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-action]');
+    if (!btn) return;
+    var id = parseInt(btn.getAttribute('data-id'), 10);
+    var action = btn.getAttribute('data-action');
+    if (action === 'delete-device') deleteDevice(id);
+    else if (action === 'open-device') openDeviceModal(id);
+    else if (action === 'delete-device-item') deleteDeviceItem(id);
+    else if (action === 'open-user') openUserModal(id);
+    else if (action === 'delete-user') deleteUser(id);
+  });
+</script>
+</body>
+</html>

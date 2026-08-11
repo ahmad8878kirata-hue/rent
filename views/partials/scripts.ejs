@@ -1,0 +1,40 @@
+<script>
+  function formatMoney(n) {
+    var num = Math.round((n || 0) * 100) / 100;
+    return num.toLocaleString('en-US');
+  }
+  function toLatinDigits(s) {
+    if (s == null) return '';
+    return String(s)
+      .replace(/[٠-٩]/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'.indexOf(d); })
+      .replace(/[۰-۹]/g, function (d) { return '۰۱۲۳۴۵۶۷۸۹'.indexOf(d); });
+  }
+  function sanitizeNumber(el) {
+    if (!el) return '';
+    var converted = toLatinDigits(el.value);
+    var cleaned = converted.replace(/[^\d.]/g, '').replace(/(\..*)\./g, '$1');
+    if (cleaned !== el.value) el.value = cleaned;
+    return cleaned;
+  }
+  function escapeHtml(str) {
+    var div = document.createElement('div');
+    div.textContent = str == null ? '' : String(str);
+    return div.innerHTML;
+  }
+  function showToast(message, type) {
+    var container = document.getElementById('toast-container');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'toast-container';
+      container.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] flex flex-col gap-2 items-center';
+      document.body.appendChild(container);
+    }
+    var toast = document.createElement('div');
+    var bg = type === 'error' ? 'bg-error' : 'bg-primary';
+    var icon = type === 'error' ? 'error' : 'check_circle';
+    toast.className = bg + ' text-on-primary px-5 py-3 rounded-xl shadow-lg flex items-center gap-2 font-label-sm text-label-sm animate-pulse';
+    toast.innerHTML = '<span class="material-symbols-outlined text-[18px]">' + icon + '</span><span>' + escapeHtml(message) + '</span>';
+    container.appendChild(toast);
+    setTimeout(function () { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; setTimeout(function () { toast.remove(); }, 300); }, 2500);
+  }
+</script>

@@ -1,0 +1,143 @@
+<%- include('partials/head', { title: 'قائمة العملاء' }) %>
+<body class="bg-background text-on-surface">
+<div class="flex h-screen overflow-hidden">
+<%- include('partials/sidebar', { active: active }) %>
+<main class="flex-1 flex flex-col md:mr-[280px] h-full overflow-hidden">
+  <%- include('partials/header', { pageTitle: 'قائمة العملاء', searchPlaceholder: 'بحث باسم العميل أو رقم الهاتف...' }) %>
+  <div class="flex-1 overflow-y-auto p-lg bg-background">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-lg gap-md">
+      <div>
+        <h1 class="font-headline-md text-headline-md text-on-surface">قائمة العملاء</h1>
+        <p class="font-body-md text-body-md text-on-surface-variant mt-1">إدارة بيانات العملاء وحالة الأقساط</p>
+      </div>
+      <div class="flex items-center gap-md w-full md:w-auto">
+        <form method="get" action="/rent/customers" class="relative flex-1 md:hidden">
+          <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+          <input name="q" value="<%= q %>" class="w-full bg-surface-container pl-4 pr-10 py-2 rounded-lg border-none focus:ring-2 focus:ring-primary text-body-md font-body-md" placeholder="بحث..." type="text"/>
+        </form>
+        <form method="get" action="/rent/customers" class="relative min-w-[150px]">
+          <select name="filter" class="w-full appearance-none bg-surface-container py-2 pl-8 pr-4 rounded-lg border-none focus:ring-2 focus:ring-primary text-body-md font-body-md text-on-surface cursor-pointer" onchange="this.form.submit()">
+            <option value="all" <%= filter === 'all' ? 'selected' : '' %>>كل الحالات</option>
+            <option value="committed" <%= filter === 'committed' ? 'selected' : '' %>>ملتزم</option>
+            <option value="overdue" <%= filter === 'overdue' ? 'selected' : '' %>>متأخر</option>
+            <option value="finished" <%= filter === 'finished' ? 'selected' : '' %>>منتهي</option>
+          </select>
+          <span class="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant">arrow_drop_down</span>
+        </form>
+      </div>
+    </div>
+
+    <!-- Data Table -->
+    <div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-right border-collapse">
+          <thead class="bg-[#F1F5F9] border-b border-outline-variant">
+            <tr>
+              <th class="py-3 px-4 font-label-sm text-label-sm text-on-surface-variant whitespace-nowrap">رقم التعريف</th>
+              <th class="py-3 px-4 font-label-sm text-label-sm text-on-surface-variant whitespace-nowrap">الاسم</th>
+              <th class="py-3 px-4 font-label-sm text-label-sm text-on-surface-variant whitespace-nowrap">رقم الهاتف</th>
+              <th class="py-3 px-4 font-label-sm text-label-sm text-on-surface-variant whitespace-nowrap">الجهاز</th>
+              <th class="py-3 px-4 font-label-sm text-label-sm text-on-surface-variant whitespace-nowrap">إجمالي المتبقي</th>
+              <th class="py-3 px-4 font-label-sm text-label-sm text-on-surface-variant whitespace-nowrap">المدفوع حتى الآن</th>
+              <th class="py-3 px-4 font-label-sm text-label-sm text-on-surface-variant whitespace-nowrap">المتبقي الحالي</th>
+              <th class="py-3 px-4 font-label-sm text-label-sm text-on-surface-variant whitespace-nowrap">الأقساط (مدفوع/إجمالي)</th>
+              <th class="py-3 px-4 font-label-sm text-label-sm text-on-surface-variant whitespace-nowrap">الحالة</th>
+              <th class="py-3 px-4 font-label-sm text-label-sm text-on-surface-variant whitespace-nowrap text-center">الإجراءات</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-outline-variant">
+            <% if (customers.length === 0) { %>
+            <tr><td colspan="10" class="py-10 text-center text-secondary">لا يوجد عملاء مطابقون</td></tr>
+            <% } %>
+            <% customers.forEach(function(c) { %>
+            <tr class="hover:bg-surface-container-low transition-colors group">
+              <td class="py-3 px-4 font-body-md text-body-md text-on-surface">#C-<%= 1000 + c.id %></td>
+              <td class="py-3 px-4 font-title-sm text-title-sm text-on-surface">
+                <a href="/rent/customers/<%= c.id %>" class="hover:text-primary transition-colors"><%= c.name %></a>
+              </td>
+              <td class="py-3 px-4 font-body-md text-body-md text-on-surface-variant" dir="ltr"><%= c.phone %></td>
+              <td class="py-3 px-4 font-body-md text-body-md text-on-surface"><%= c.contract.device_model %></td>
+              <td class="py-3 px-4 font-body-md text-body-md text-on-surface"><%= helpers.fmtMoney(c.contract.financed_amount, settings.currency) %></td>
+              <td class="py-3 px-4 font-body-md text-body-md text-on-surface text-primary-container"><%= helpers.fmtMoney(c.installmentsPaid, settings.currency) %></td>
+              <td class="py-3 px-4 font-body-md text-body-md text-on-surface font-semibold <%= c.status === 'overdue' ? 'text-error' : (c.status === 'finished' ? 'text-outline' : '') %>"><%= helpers.fmtMoney(c.remaining, settings.currency) %></td>
+              <td class="py-3 px-4">
+                <div class="flex items-center gap-2">
+                  <span class="font-body-md text-body-md"><%= c.paidCount %>/<%= c.totalMonths %></span>
+                  <div class="w-16 h-2 bg-surface-container rounded-full overflow-hidden">
+                    <div class="<%= c.status === 'overdue' ? 'bg-error' : (c.status === 'finished' ? 'bg-outline' : 'bg-primary') %> h-full rounded-full" style="width: <%= c.totalMonths ? Math.round(c.paidCount / c.totalMonths * 100) : 0 %>%"></div>
+                  </div>
+                </div>
+              </td>
+              <td class="py-3 px-4">
+                <% if (c.status === 'committed') { %>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[#ecfdf5] text-[#065f46] border border-[#a7f3d0]">ملتزم</span>
+                <% } else if (c.status === 'overdue') { %>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-error-container text-on-error-container border border-error/30">متأخر</span>
+                <% } else { %>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-surface-container-highest text-on-surface-variant border border-outline-variant">منتهي</span>
+                <% } %>
+              </td>
+              <td class="py-3 px-4">
+                <div class="flex items-center justify-center gap-sm opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                  <a href="/rent/register-payment?customer=<%= c.id %>" class="p-1 text-primary hover:bg-surface-container rounded" title="إضافة قسط">
+                    <span class="material-symbols-outlined text-sm">add_circle</span>
+                  </a>
+                  <a href="/rent/customers/<%= c.id %>" class="p-1 text-on-surface-variant hover:bg-surface-container rounded" title="تفاصيل">
+                    <span class="material-symbols-outlined text-sm">visibility</span>
+                  </a>
+                  <button data-action="delete-customer" data-id="<%= c.id %>" data-name="<%= c.name %>" class="p-1 text-error hover:bg-error-container rounded" title="حذف العميل">
+                    <span class="material-symbols-outlined text-sm">delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+      <!-- Pagination -->
+      <div class="p-4 border-t border-outline-variant flex items-center justify-between bg-surface-bright">
+        <span class="font-label-sm text-label-sm text-on-surface-variant">عرض <%= startItem %> إلى <%= endItem %> من أصل <%= totalRows %> عميل</span>
+        <div class="flex gap-2">
+          <% if (page > 1) { %>
+          <a href="/rent/customers?page=<%= page - 1 %>&q=<%= encodeURIComponent(q) %>&filter=<%= filter %>" class="px-3 py-1 border border-outline-variant rounded-md text-on-surface-variant hover:bg-surface-container transition-colors">السابق</a>
+          <% } else { %>
+          <button class="px-3 py-1 border border-outline-variant rounded-md text-on-surface-variant disabled:opacity-50" disabled>السابق</button>
+          <% } %>
+          <% for (var p = 1; p <= totalPages; p++) { %>
+          <a href="/rent/customers?page=<%= p %>&q=<%= encodeURIComponent(q) %>&filter=<%= filter %>" class="px-3 py-1 border rounded-md <%= p === page ? 'border-primary bg-primary text-on-primary' : 'border-outline-variant text-on-surface-variant hover:bg-surface-container transition-colors' %>"><%= p %></a>
+          <% } %>
+          <% if (page < totalPages) { %>
+          <a href="/rent/customers?page=<%= page + 1 %>&q=<%= encodeURIComponent(q) %>&filter=<%= filter %>" class="px-3 py-1 border border-outline-variant rounded-md text-on-surface-variant hover:bg-surface-container transition-colors">التالي</a>
+          <% } else { %>
+          <button class="px-3 py-1 border border-outline-variant rounded-md text-on-surface-variant disabled:opacity-50" disabled>التالي</button>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+</div>
+<%- include('partials/scripts') %>
+<script>
+  function deleteCustomer(btn, id) {
+    var name = (btn.getAttribute('data-name') || '').trim();
+    var msg = name
+      ? 'هل تريد حذف العميل "' + name + '"؟\nسيتم حذف جميع العقود والأقساط والمدفوعات المرتبطة به نهائياً.'
+      : 'هل تريد حذف هذا العميل؟\nسيتم حذف جميع العقود والأقساط والمدفوعات المرتبطة به نهائياً.';
+    if (!confirm(msg)) return;
+    fetch('/api/customers/' + id, { method: 'DELETE' })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        if (j.ok) { showToast('تم حذف العميل'); window.location.reload(); }
+        else { showToast(j.error || 'حدث خطأ', 'error'); }
+      });
+  }
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-action="delete-customer"]');
+    if (!btn) return;
+    deleteCustomer(btn, parseInt(btn.getAttribute('data-id'), 10));
+  });
+</script>
+</body>
+</html>

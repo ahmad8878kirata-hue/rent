@@ -1,0 +1,166 @@
+<%- include('partials/head', { title: 'تفاصيل العميل' }) %>
+<body class="bg-surface text-on-surface flex min-h-screen">
+<%- include('partials/sidebar', { active: active }) %>
+<main class="flex-1 md:mr-[280px] w-full max-w-[1240px] mx-auto px-margin md:px-lg py-lg">
+  <header class="flex justify-between items-center mb-xl">
+    <div>
+      <h2 class="font-display-lg text-display-lg-mobile md:text-display-lg text-primary">تفاصيل العميل</h2>
+      <p class="font-body-md text-body-md text-secondary mt-base">عرض وتحديث بيانات العميل وجدول الأقساط</p>
+    </div>
+    <div class="flex gap-sm items-center">
+      <button onclick="openMobileSidebar()" class="md:hidden p-xs text-secondary hover:bg-surface-container-high rounded-full transition-colors" aria-label="القائمة">
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+      <a href="/rent/customers/<%= customer.id %>/print" target="_blank">
+        <button class="flex items-center gap-xs bg-surface-container-lowest border border-outline-variant text-primary px-md py-sm rounded-lg hover:bg-surface-container-low transition-colors font-label-sm text-label-sm">
+          <span class="material-symbols-outlined text-[20px]">print</span>
+          طباعة العقد
+        </button>
+      </a>
+      <button onclick="sendReminder()" class="flex items-center gap-xs bg-surface-container-lowest border border-outline-variant text-primary px-md py-sm rounded-lg hover:bg-surface-container-low transition-colors font-label-sm text-label-sm">
+        <span class="material-symbols-outlined text-[20px]">notifications_active</span>
+        إرسال رسالة تذكير
+      </button>
+    </div>
+  </header>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
+    <!-- Customer Info -->
+    <section class="lg:col-span-1 bg-surface-container-lowest rounded-xl border border-outline-variant p-lg shadow-sm">
+      <div class="flex items-center gap-md mb-lg">
+        <div class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+          <span class="material-symbols-outlined text-[32px]">person</span>
+        </div>
+        <div>
+          <h3 class="font-title-sm text-title-sm text-on-surface"><%= customer.name %></h3>
+          <p class="font-caption-xs text-caption-xs text-secondary mt-xs">رقم الهوية: <%= customer.national_id || '—' %></p>
+        </div>
+      </div>
+      <div class="space-y-md">
+        <div>
+          <span class="block font-caption-xs text-caption-xs text-secondary mb-xs">رقم الجوال</span>
+          <div class="flex items-center gap-sm">
+            <span class="material-symbols-outlined text-[16px] text-primary">call</span>
+            <span class="font-body-md text-body-md text-on-surface" dir="ltr"><%= customer.phone %></span>
+          </div>
+        </div>
+        <div>
+          <span class="block font-caption-xs text-caption-xs text-secondary mb-xs">العنوان</span>
+          <div class="flex items-center gap-sm">
+            <span class="material-symbols-outlined text-[16px] text-primary">location_on</span>
+            <span class="font-body-md text-body-md text-on-surface"><%= [customer.district, customer.street, customer.city].filter(Boolean).join('، ') || '—' %></span>
+          </div>
+        </div>
+        <div>
+          <span class="block font-caption-xs text-caption-xs text-secondary mb-xs">تاريخ بداية العقد</span>
+          <div class="flex items-center gap-sm">
+            <span class="material-symbols-outlined text-[16px] text-primary">calendar_today</span>
+            <span class="font-body-md text-body-md text-on-surface"><%= helpers.fmtDate(contract.start_date) %></span>
+          </div>
+        </div>
+        <div>
+          <span class="block font-caption-xs text-caption-xs text-secondary mb-xs">الجهاز</span>
+          <div class="flex items-center gap-sm">
+            <span class="material-symbols-outlined text-[16px] text-primary">smartphone</span>
+            <span class="font-body-md text-body-md text-on-surface"><%= contract.device_model %></span>
+          </div>
+        </div>
+        <div class="pt-sm border-t border-outline-variant mt-sm">
+          <span class="block font-caption-xs text-caption-xs text-secondary mb-xs">إجمالي المديونية المتبقية</span>
+          <span class="font-title-sm text-title-sm <%= remaining > 0 ? 'text-error' : 'text-primary' %>"><%= helpers.fmtMoney(remaining, settings.currency) %></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Installments & History -->
+    <div class="lg:col-span-2 space-y-lg">
+      <!-- Installments Table -->
+      <section class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden shadow-sm">
+        <div class="p-lg border-b border-outline-variant bg-surface-container-low">
+          <h3 class="font-title-sm text-title-sm text-primary flex items-center gap-sm">
+            <span class="material-symbols-outlined">event_note</span>
+            جدول الأقساط الشهرية
+          </h3>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-right border-collapse">
+            <thead>
+              <tr class="bg-[#F1F5F9] border-b border-outline-variant font-label-sm text-label-sm text-on-surface">
+                <th class="p-md font-semibold">رقم القسط</th>
+                <th class="p-md font-semibold">تاريخ الاستحقاق</th>
+                <th class="p-md font-semibold">المبلغ المستحق</th>
+                <th class="p-md font-semibold">المبلغ المدفوع</th>
+                <th class="p-md font-semibold">الحالة</th>
+                <th class="p-md font-semibold text-center">إجراء</th>
+              </tr>
+            </thead>
+            <tbody class="font-body-md text-body-md text-on-surface-variant divide-y divide-outline-variant">
+              <% installments.forEach(function(i) { %>
+              <tr class="hover:bg-surface-container transition-colors">
+                <td class="p-md"><%= i.installment_number %></td>
+                <td class="p-md"><%= helpers.fmtDate(i.due_date) %></td>
+                <td class="p-md"><%= helpers.fmtMoney(i.amount, settings.currency) %></td>
+                <td class="p-md"><%= helpers.fmtMoney(i.paid_amount, settings.currency) %></td>
+                <td class="p-md">
+                  <% if (i.status === 'paid') { %>
+                  <span class="inline-flex items-center px-2 py-1 rounded-full bg-primary-container text-on-primary-container font-caption-xs text-caption-xs">مدفوع</span>
+                  <% } else if (i.status === 'overdue') { %>
+                  <span class="inline-flex items-center px-2 py-1 rounded-full bg-error-container text-on-error-container font-caption-xs text-caption-xs">متأخر</span>
+                  <% } else { %>
+                  <span class="inline-flex items-center px-2 py-1 rounded-full bg-surface-variant text-on-surface-variant font-caption-xs text-caption-xs">غير مدفوع</span>
+                  <% } %>
+                </td>
+                <td class="p-md text-center">
+                  <% if (i.status !== 'paid') { %>
+                  <a href="/rent/register-payment?customer=<%= customer.id %>&installment=<%= i.id %>">
+                    <button class="bg-primary text-on-primary px-sm py-xs rounded-lg font-label-sm text-label-sm hover:opacity-90 transition-opacity">تسجيل دفع</button>
+                  </a>
+                  <% } else { %>--<% } %>
+                </td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Payment History -->
+      <section class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm p-lg">
+        <h3 class="font-title-sm text-title-sm text-primary mb-md flex items-center gap-sm">
+          <span class="material-symbols-outlined">history</span>
+          سجل المدفوعات
+        </h3>
+        <div class="space-y-sm">
+          <% if (payments.length === 0) { %>
+          <p class="text-secondary text-center py-md">لا توجد مدفوعات مسجلة بعد</p>
+          <% } %>
+          <% payments.forEach(function(p) { %>
+          <div class="flex justify-between items-center p-md bg-surface border border-outline-variant rounded-lg">
+            <div>
+              <span class="block font-label-sm text-label-sm text-on-surface"><%= helpers.fmtDate(p.payment_date) %></span>
+              <span class="font-caption-xs text-caption-xs text-secondary flex items-center gap-xs mt-xs">
+                <span class="material-symbols-outlined text-[14px]"><%= p.method === 'bank_transfer' ? 'account_balance' : 'payments' %></span>
+                <%= p.method === 'bank_transfer' ? 'تحويل بنكي' : 'نقدي' %>
+              </span>
+            </div>
+            <span class="font-title-sm text-title-sm text-primary-container">+ <%= helpers.fmtMoney(p.amount, settings.currency) %></span>
+          </div>
+          <% }); %>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+<%- include('partials/scripts') %>
+<script>
+  function sendReminder() {
+    fetch('/api/customers/<%= customer.id %>/reminder', { method: 'POST' })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        if (j.ok) { showToast('تم إرسال رسالة التذكير للعميل', 'success'); }
+        else { showToast(j.error || 'حدث خطأ', 'error'); }
+      });
+  }
+</script>
+</body>
+</html>

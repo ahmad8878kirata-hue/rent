@@ -1,0 +1,270 @@
+Error: C:\Users\VICTUS 16\OneDrive\Desktop\rent\views\dashboard.ejs:3
+    1| <%- include('partials/head', { title: 'لوحة التحكم' }) %>
+    2| <body class="bg-background text-on-background min-h-screen flex flex-col md:flex-row rtl">
+ >> 3| <%- include('partials/sidebar', { active: active }) %>
+    4| <main class="flex-1 md:mr-[280px] min-h-screen flex flex-col">
+    5|   <%- include('partials/header', { pageTitle: 'لوحة التحكم' }) %>
+    6|   <div class="p-margin max-w-[1240px] mx-auto w-full flex-1 flex flex-col gap-margin">
+
+C:\Users\VICTUS 16\OneDrive\Desktop\rent\views\partials\sidebar.ejs:11
+    9|     </div>
+    10|     <div class="flex-1 overflow-y-auto flex flex-col">
+ >> 11|       <%- include('partials/sidebar-content', { active: active }) %>
+    12|     </div>
+    13|   </aside>
+    14| </div>
+
+Could not find the include file "partials/sidebar-content"
+    at getIncludePath (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:185:13)
+    at includeFile (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:311:19)
+    at include (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:701:16)
+    at eval (eval at compile (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:12:17)
+    at sidebar (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:703:17)
+    at include (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:701:39)
+    at eval (eval at compile (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:13:17)
+    at dashboard (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:703:17)
+    at tryHandleCache (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:274:36)
+    at exports.renderFile [as engine] (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:491:10)
+Error: C:\Users\VICTUS 16\OneDrive\Desktop\rent\views\customers.ejs:4
+    2| <body class="bg-background text-on-surface">
+    3| <div class="flex h-screen overflow-hidden">
+ >> 4| <%- include('partials/sidebar', { active: active }) %>
+    5| <main class="flex-1 flex flex-col md:mr-[280px] h-full overflow-hidden">
+    6|   <%- include('partials/header', { pageTitle: 'قائمة العملاء', searchPlaceholder: 'بحث باسم العميل أو رقم الهاتف...' }) %>
+    7|   <div class="flex-1 overflow-y-auto p-lg bg-background">
+
+C:\Users\VICTUS 16\OneDrive\Desktop\rent\views\partials\sidebar.ejs:11
+    9|     </div>
+    10|     <div class="flex-1 overflow-y-auto flex flex-col">
+ >> 11|       <%- include('partials/sidebar-content', { active: active }) %>
+    12|     </div>
+    13|   </aside>
+    14| </div>
+
+Could not find the include file "partials/sidebar-content"
+    at getIncludePath (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:185:13)
+    at includeFile (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:311:19)
+    at include (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:701:16)
+    at eval (eval at compile (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:12:17)
+    at sidebar (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:703:17)
+    at include (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:701:39)
+    at eval (eval at compile (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:13:17)
+    at customers (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:703:17)
+    at tryHandleCache (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:274:36)
+    at exports.renderFile [as engine] (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:491:10)
+Error: C:\Users\VICTUS 16\OneDrive\Desktop\rent\views\settings.ejs:3
+    1| <%- include('partials/head', { title: 'الإعدادات' }) %>
+    2| <body class="bg-background text-on-surface font-body-md overflow-hidden flex">
+ >> 3| <%- include('partials/sidebar', { active: active }) %>
+    4| <div class="flex-1 flex flex-col h-screen md:pr-[280px]">
+    5|   <%- include('partials/header', { pageTitle: 'إعدادات النظام' }) %>
+    6|   <main class="flex-1 overflow-y-auto p-lg lg:p-xl bg-background">
+
+C:\Users\VICTUS 16\OneDrive\Desktop\rent\views\partials\sidebar.ejs:11
+    9|     </div>
+    10|     <div class="flex-1 overflow-y-auto flex flex-col">
+ >> 11|       <%- include('partials/sidebar-content', { active: active }) %>
+    12|     </div>
+    13|   </aside>
+    14| </div>
+
+Could not find the include file "partials/sidebar-content"
+    at getIncludePath (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:185:13)
+    at includeFile (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:311:19)
+    at include (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:701:16)
+    at eval (eval at compile (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:12:17)
+    at sidebar (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:703:17)
+    at include (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:701:39)
+    at eval (eval at compile (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:13:17)
+    at settings (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:703:17)
+    at tryHandleCache (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:274:36)
+    at exports.renderFile [as engine] (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:491:10)
+Error: C:\Users\VICTUS 16\OneDrive\Desktop\rent\views\dashboard.ejs:3
+    1| <%- include('partials/head', { title: 'لوحة التحكم' }) %>
+    2| <body class="bg-background text-on-background min-h-screen flex flex-col md:flex-row rtl">
+ >> 3| <%- include('partials/sidebar', { active: active }) %>
+    4| <main class="flex-1 md:mr-[280px] min-h-screen flex flex-col">
+    5|   <%- include('partials/header', { pageTitle: 'لوحة التحكم' }) %>
+    6|   <div class="p-margin max-w-[1240px] mx-auto w-full flex-1 flex flex-col gap-margin">
+
+C:\Users\VICTUS 16\OneDrive\Desktop\rent\views\partials\sidebar.ejs:11
+    9|     </div>
+    10|     <div class="flex-1 overflow-y-auto flex flex-col">
+ >> 11|       <%- include('partials/sidebar-content', { active: active }) %>
+    12|     </div>
+    13|   </aside>
+    14| </div>
+
+Could not find the include file "partials/sidebar-content"
+    at getIncludePath (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:185:13)
+    at includeFile (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:311:19)
+    at include (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:701:16)
+    at eval (eval at compile (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:12:17)
+    at sidebar (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:703:17)
+    at include (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:701:39)
+    at eval (eval at compile (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:13:17)
+    at dashboard (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:703:17)
+    at tryHandleCache (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:274:36)
+    at exports.renderFile [as engine] (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:491:10)
+Error: C:\Users\VICTUS 16\OneDrive\Desktop\rent\views\customers.ejs:4
+    2| <body class="bg-background text-on-surface">
+    3| <div class="flex h-screen overflow-hidden">
+ >> 4| <%- include('partials/sidebar', { active: active }) %>
+    5| <main class="flex-1 flex flex-col md:mr-[280px] h-full overflow-hidden">
+    6|   <%- include('partials/header', { pageTitle: 'قائمة العملاء', searchPlaceholder: 'بحث باسم العميل أو رقم الهاتف...' }) %>
+    7|   <div class="flex-1 overflow-y-auto p-lg bg-background">
+
+C:\Users\VICTUS 16\OneDrive\Desktop\rent\views\partials\sidebar.ejs:11
+    9|     </div>
+    10|     <div class="flex-1 overflow-y-auto flex flex-col">
+ >> 11|       <%- include('partials/sidebar-content', { active: active }) %>
+    12|     </div>
+    13|   </aside>
+    14| </div>
+
+Could not find the include file "partials/sidebar-content"
+    at getIncludePath (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:185:13)
+    at includeFile (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:311:19)
+    at include (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:701:16)
+    at eval (eval at compile (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:12:17)
+    at sidebar (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:703:17)
+    at include (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:701:39)
+    at eval (eval at compile (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:13:17)
+    at customers (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:703:17)
+    at tryHandleCache (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:274:36)
+    at exports.renderFile [as engine] (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:491:10)
+Error: C:\Users\VICTUS 16\OneDrive\Desktop\rent\views\settings.ejs:3
+    1| <%- include('partials/head', { title: 'الإعدادات' }) %>
+    2| <body class="bg-background text-on-surface font-body-md overflow-hidden flex">
+ >> 3| <%- include('partials/sidebar', { active: active }) %>
+    4| <div class="flex-1 flex flex-col h-screen md:pr-[280px]">
+    5|   <%- include('partials/header', { pageTitle: 'إعدادات النظام' }) %>
+    6|   <main class="flex-1 overflow-y-auto p-lg lg:p-xl bg-background">
+
+C:\Users\VICTUS 16\OneDrive\Desktop\rent\views\partials\sidebar.ejs:11
+    9|     </div>
+    10|     <div class="flex-1 overflow-y-auto flex flex-col">
+ >> 11|       <%- include('partials/sidebar-content', { active: active }) %>
+    12|     </div>
+    13|   </aside>
+    14| </div>
+
+Could not find the include file "partials/sidebar-content"
+    at getIncludePath (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:185:13)
+    at includeFile (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:311:19)
+    at include (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:701:16)
+    at eval (eval at compile (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:12:17)
+    at sidebar (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:703:17)
+    at include (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:701:39)
+    at eval (eval at compile (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:13:17)
+    at settings (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:703:17)
+    at tryHandleCache (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:274:36)
+    at exports.renderFile [as engine] (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:491:10)
+Error: C:\Users\VICTUS 16\OneDrive\Desktop\rent\views\settings.ejs:3
+    1| <%- include('partials/head', { title: 'الإعدادات' }) %>
+    2| <body class="bg-background text-on-surface font-body-md overflow-hidden flex">
+ >> 3| <%- include('partials/sidebar', { active: active }) %>
+    4| <div class="flex-1 flex flex-col h-screen md:pr-[280px]">
+    5|   <%- include('partials/header', { pageTitle: 'إعدادات النظام' }) %>
+    6|   <main class="flex-1 overflow-y-auto p-lg lg:p-xl bg-background">
+
+C:\Users\VICTUS 16\OneDrive\Desktop\rent\views\partials\sidebar.ejs:11
+    9|     </div>
+    10|     <div class="flex-1 overflow-y-auto flex flex-col">
+ >> 11|       <%- include('partials/sidebar-content', { active: active }) %>
+    12|     </div>
+    13|   </aside>
+    14| </div>
+
+Could not find the include file "partials/sidebar-content"
+    at getIncludePath (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:185:13)
+    at includeFile (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:311:19)
+    at include (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:701:16)
+    at eval (eval at compile (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:12:17)
+    at sidebar (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:703:17)
+    at include (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:701:39)
+    at eval (eval at compile (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:13:17)
+    at settings (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:703:17)
+    at tryHandleCache (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:274:36)
+    at exports.renderFile [as engine] (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:491:10)
+Error: C:\Users\VICTUS 16\OneDrive\Desktop\rent\views\settings.ejs:3
+    1| <%- include('partials/head', { title: 'الإعدادات' }) %>
+    2| <body class="bg-background text-on-surface font-body-md overflow-hidden flex">
+ >> 3| <%- include('partials/sidebar', { active: active }) %>
+    4| <div class="flex-1 flex flex-col h-screen md:pr-[280px]">
+    5|   <%- include('partials/header', { pageTitle: 'إعدادات النظام' }) %>
+    6|   <main class="flex-1 overflow-y-auto p-lg lg:p-xl bg-background">
+
+C:\Users\VICTUS 16\OneDrive\Desktop\rent\views\partials\sidebar.ejs:11
+    9|     </div>
+    10|     <div class="flex-1 overflow-y-auto flex flex-col">
+ >> 11|       <%- include('partials/sidebar-content', { active: active }) %>
+    12|     </div>
+    13|   </aside>
+    14| </div>
+
+Could not find the include file "partials/sidebar-content"
+    at getIncludePath (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:185:13)
+    at includeFile (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:311:19)
+    at include (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:701:16)
+    at eval (eval at compile (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:12:17)
+    at sidebar (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:703:17)
+    at include (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:701:39)
+    at eval (eval at compile (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:13:17)
+    at settings (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:703:17)
+    at tryHandleCache (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:274:36)
+    at exports.renderFile [as engine] (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:491:10)
+Error: C:\Users\VICTUS 16\OneDrive\Desktop\rent\views\settings.ejs:3
+    1| <%- include('partials/head', { title: 'الإعدادات' }) %>
+    2| <body class="bg-background text-on-surface font-body-md overflow-hidden flex">
+ >> 3| <%- include('partials/sidebar', { active: active }) %>
+    4| <div class="flex-1 flex flex-col h-screen md:pr-[280px]">
+    5|   <%- include('partials/header', { pageTitle: 'إعدادات النظام' }) %>
+    6|   <main class="flex-1 overflow-y-auto p-lg lg:p-xl bg-background">
+
+C:\Users\VICTUS 16\OneDrive\Desktop\rent\views\partials\sidebar.ejs:11
+    9|     </div>
+    10|     <div class="flex-1 overflow-y-auto flex flex-col">
+ >> 11|       <%- include('partials/sidebar-content', { active: active }) %>
+    12|     </div>
+    13|   </aside>
+    14| </div>
+
+Could not find the include file "partials/sidebar-content"
+    at getIncludePath (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:185:13)
+    at includeFile (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:311:19)
+    at include (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:701:16)
+    at eval (eval at compile (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:12:17)
+    at sidebar (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:703:17)
+    at include (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:701:39)
+    at eval (eval at compile (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:13:17)
+    at settings (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:703:17)
+    at tryHandleCache (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:274:36)
+    at exports.renderFile [as engine] (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:491:10)
+Error: C:\Users\VICTUS 16\OneDrive\Desktop\rent\views\settings.ejs:3
+    1| <%- include('partials/head', { title: 'الإعدادات' }) %>
+    2| <body class="bg-background text-on-surface font-body-md overflow-hidden flex">
+ >> 3| <%- include('partials/sidebar', { active: active }) %>
+    4| <div class="flex-1 flex flex-col h-screen md:pr-[280px]">
+    5|   <%- include('partials/header', { pageTitle: 'إعدادات النظام' }) %>
+    6|   <main class="flex-1 overflow-y-auto p-lg lg:p-xl bg-background">
+
+C:\Users\VICTUS 16\OneDrive\Desktop\rent\views\partials\sidebar.ejs:11
+    9|     </div>
+    10|     <div class="flex-1 overflow-y-auto flex flex-col">
+ >> 11|       <%- include('partials/sidebar-content', { active: active }) %>
+    12|     </div>
+    13|   </aside>
+    14| </div>
+
+Could not find the include file "partials/sidebar-content"
+    at getIncludePath (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:185:13)
+    at includeFile (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:311:19)
+    at include (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:701:16)
+    at eval (eval at compile (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:12:17)
+    at sidebar (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:703:17)
+    at include (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:701:39)
+    at eval (eval at compile (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:673:12), <anonymous>:13:17)
+    at settings (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:703:17)
+    at tryHandleCache (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:274:36)
+    at exports.renderFile [as engine] (C:\Users\VICTUS 16\OneDrive\Desktop\rent\node_modules\ejs\lib\ejs.js:491:10)

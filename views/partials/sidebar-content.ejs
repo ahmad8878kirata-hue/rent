@@ -1,0 +1,34 @@
+<div class="p-lg border-b border-outline-variant">
+  <div class="flex items-center gap-md mb-md">
+    <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary">
+      <span class="material-symbols-outlined fill">account_balance</span>
+    </div>
+    <div>
+      <h1 class="font-headline-md text-headline-md font-black text-primary-container">نظام الأقساط</h1>
+      <p class="font-label-sm text-label-sm text-on-surface-variant">الإدارة المالية</p>
+    </div>
+  </div>
+  <a href="/rent/register-payment">
+    <button class="w-full bg-primary text-on-primary font-label-sm text-label-sm py-sm px-md rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-sm shadow-sm">
+      <span class="material-symbols-outlined text-[18px]">add</span>
+      إضافة دفعة جديدة
+    </button>
+  </a>
+</div>
+<div class="flex-1 py-md overflow-y-auto">
+  <% var items = [
+    { href: '/rent/dashboard', key: 'dashboard', icon: 'dashboard', label: 'لوحة التحكم' },
+    { href: '/rent/add-customer', key: 'addCustomer', icon: 'person_add', label: 'إضافة عميل' },
+    { href: '/rent/customers', key: 'customers', icon: 'group', label: 'قائمة العملاء' },
+    { href: '/rent/reports', key: 'reports', icon: 'analytics', label: 'التقارير' },
+    { href: '/rent/settings', key: 'settings', icon: 'settings', label: 'الإعدادات' },
+    { href: '/rent/notifications', key: 'notifications', icon: 'notifications', label: 'الإشعارات' },
+    { href: '/rent/register-payment', key: 'payment', icon: 'payments', label: 'تسجيل دفعة' }
+  ]; %>
+  <% items.forEach(function(item) { %>
+    <a class="flex flex-row-reverse items-center justify-start gap-md p-md hover:bg-surface-container-highest transition-all font-label-sm text-label-sm <%= active === item.key ? 'text-primary border-r-4 border-primary font-bold bg-transparent' : 'text-on-surface-variant' %>" href="<%= item.href %>">
+      <span class="material-symbols-outlined <%= active === item.key ? 'fill' : '' %>"><%= item.icon %></span>
+      <span><%= item.label %></span>
+    </a>
+  <% }); %>
+</div>

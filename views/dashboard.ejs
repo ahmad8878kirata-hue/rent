@@ -1,0 +1,141 @@
+<%- include('partials/head', { title: 'لوحة التحكم' }) %>
+<body class="bg-background text-on-background min-h-screen flex flex-col md:flex-row rtl">
+<%- include('partials/sidebar', { active: active }) %>
+<main class="flex-1 md:mr-[280px] min-h-screen flex flex-col">
+  <%- include('partials/header', { pageTitle: 'لوحة التحكم' }) %>
+  <div class="p-margin max-w-[1240px] mx-auto w-full flex-1 flex flex-col gap-margin">
+    <!-- Quick Stats Section -->
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-gutter">
+      <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex flex-col gap-sm shadow-sm">
+        <div class="flex justify-between items-start">
+          <span class="material-symbols-outlined text-primary text-3xl fill" style="font-variation-settings: 'FILL' 1;">group</span>
+          <span class="font-caption-xs text-caption-xs text-secondary bg-surface-container-low px-sm py-xs rounded-full">شهري</span>
+        </div>
+        <div>
+          <h3 class="font-label-sm text-label-sm text-on-surface-variant">إجمالي العملاء</h3>
+          <p class="font-headline-md text-headline-md text-on-surface font-bold mt-xs"><%= totalCustomers.toLocaleString('en-US') %></p>
+        </div>
+      </div>
+      <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex flex-col gap-sm shadow-sm">
+        <div class="flex justify-between items-start">
+          <span class="material-symbols-outlined text-primary text-3xl fill" style="font-variation-settings: 'FILL' 1;">devices</span>
+        </div>
+        <div>
+          <h3 class="font-label-sm text-label-sm text-on-surface-variant">الأجهزة المباعة</h3>
+          <p class="font-headline-md text-headline-md text-on-surface font-bold mt-xs"><%= devicesSold.toLocaleString('en-US') %></p>
+        </div>
+      </div>
+      <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex flex-col gap-sm shadow-sm">
+        <div class="flex justify-between items-start">
+          <span class="material-symbols-outlined text-tertiary text-3xl fill" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+        </div>
+        <div>
+          <h3 class="font-label-sm text-label-sm text-on-surface-variant">المبالغ المستحقة</h3>
+          <p class="font-headline-md text-headline-md text-on-surface font-bold mt-xs dir-ltr text-right"><%= helpers.fmtMoney(amountsDue, settings.currency) %></p>
+        </div>
+      </div>
+      <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex flex-col gap-sm shadow-sm">
+        <div class="flex justify-between items-start">
+          <span class="material-symbols-outlined text-primary-container text-3xl fill" style="font-variation-settings: 'FILL' 1;">payments</span>
+        </div>
+        <div>
+          <h3 class="font-label-sm text-label-sm text-on-surface-variant">المبالغ المسددة</h3>
+          <p class="font-headline-md text-headline-md text-on-surface font-bold mt-xs dir-ltr text-right"><%= helpers.fmtMoney(amountsPaid, settings.currency) %></p>
+        </div>
+      </div>
+      <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex flex-col gap-sm shadow-sm bg-gradient-to-br from-surface-container-lowest to-surface-container-low">
+        <div class="flex justify-between items-start">
+          <span class="material-symbols-outlined text-primary text-3xl fill" style="font-variation-settings: 'FILL' 1;">trending_up</span>
+        </div>
+        <div>
+          <h3 class="font-label-sm text-label-sm text-on-surface-variant">نسبة التحصيل</h3>
+          <div class="flex items-end gap-sm mt-xs">
+            <p class="font-headline-md text-headline-md text-on-surface font-bold"><%= collectionRate %>%</p>
+            <span class="text-primary font-caption-xs text-caption-xs mb-1 flex items-center gap-xs"><span class="material-symbols-outlined text-sm">arrow_upward</span> +2.4%</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter h-full">
+      <!-- Recent Transactions Table -->
+      <div class="lg:col-span-2 bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden flex flex-col">
+        <div class="p-md border-b border-outline-variant flex justify-between items-center bg-[#F1F5F9]">
+          <h3 class="font-title-sm text-title-sm text-on-surface font-semibold">جدول آخر المعاملات</h3>
+          <a href="/rent/register-payment" class="text-primary font-label-sm text-label-sm hover:underline">تسجيل دفعة</a>
+        </div>
+        <div class="overflow-x-auto flex-1">
+          <table class="w-full text-right font-body-md text-body-md">
+            <thead class="bg-[#F1F5F9] text-on-surface-variant border-b border-outline-variant">
+              <tr>
+                <th class="py-sm px-md font-label-sm text-label-sm font-semibold">رقم العملية</th>
+                <th class="py-sm px-md font-label-sm text-label-sm font-semibold">العميل</th>
+                <th class="py-sm px-md font-label-sm text-label-sm font-semibold">المبلغ</th>
+                <th class="py-sm px-md font-label-sm text-label-sm font-semibold">التاريخ</th>
+                <th class="py-sm px-md font-label-sm text-label-sm font-semibold">الطريقة</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-outline-variant">
+              <% if (recentPayments.length === 0) { %>
+              <tr><td colspan="5" class="py-md px-md text-center text-secondary">لا توجد معاملات بعد</td></tr>
+              <% } %>
+              <% recentPayments.forEach(function(p) { %>
+              <tr class="hover:bg-surface-container-low transition-colors">
+                <td class="py-sm px-md text-secondary">#TRX-<%= 10000 + p.id %></td>
+                <td class="py-sm px-md font-medium text-on-surface">
+                  <a href="/rent/customers/<%= p.customer_id %>" class="hover:text-primary transition-colors"><%= p.customer_name %></a>
+                </td>
+                <td class="py-sm px-md dir-ltr text-right font-semibold text-primary"><%= helpers.fmtMoney(p.amount, settings.currency) %></td>
+                <td class="py-sm px-md text-secondary"><%= helpers.fmtDate(p.payment_date) %></td>
+                <td class="py-sm px-md">
+                  <span class="inline-flex items-center gap-xs px-sm py-xs rounded-full bg-primary/10 text-primary font-caption-xs text-caption-xs">
+                    <span class="material-symbols-outlined text-[14px]"><%= p.method === 'bank_transfer' ? 'account_balance' : 'payments' %></span>
+                    <%= p.method === 'bank_transfer' ? 'تحويل بنكي' : 'نقدي' %>
+                  </span>
+                </td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Overdue Alerts -->
+      <div class="lg:col-span-1 bg-error-container/20 border border-error-container rounded-xl shadow-sm overflow-hidden flex flex-col">
+        <div class="p-md border-b border-error-container/50 flex justify-between items-center bg-error-container/30">
+          <h3 class="font-title-sm text-title-sm text-on-surface font-semibold flex items-center gap-sm">
+            <span class="material-symbols-outlined text-error">warning</span>
+            تنبيهات العملاء المتأخرين
+          </h3>
+        </div>
+        <div class="p-md flex-1 overflow-y-auto space-y-md">
+          <% if (overdueAlerts.length === 0) { %>
+          <div class="bg-surface-container-lowest p-sm rounded-lg border border-error-container flex items-center gap-xs text-secondary font-body-md text-body-md">
+            <span class="material-symbols-outlined text-[18px]">check_circle</span>
+            لا توجد متأخرات حالياً
+          </div>
+          <% } %>
+          <% overdueAlerts.forEach(function(o) { %>
+          <div class="bg-surface-container-lowest p-sm rounded-lg border border-error-container flex flex-col gap-xs">
+            <div class="flex justify-between items-center">
+              <span class="font-label-sm text-label-sm font-semibold text-on-surface"><%= o.customer_name %></span>
+              <span class="font-caption-xs text-caption-xs text-error font-bold bg-error-container px-2 py-1 rounded">تأخير <%= Math.max(1, Math.round(o.late_days)) %> يوم</span>
+            </div>
+            <div class="flex justify-between items-center mt-sm">
+              <span class="font-caption-xs text-caption-xs text-secondary">القسط المستحق: <span class="text-on-surface font-medium"><%= helpers.fmtMoney(o.amount, settings.currency) %></span></span>
+              <a href="/rent/customers/<%= o.customer_id %>" class="text-primary font-label-sm text-label-sm hover:underline">متابعة</a>
+            </div>
+          </div>
+          <% }); %>
+        </div>
+        <div class="p-sm bg-error-container/20 border-t border-error-container/50 text-center">
+          <a href="/rent/reports" class="text-error font-label-sm text-label-sm hover:underline font-medium">عرض جميع المتأخرات</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<%- include('partials/scripts') %>
+</body>
+</html>

@@ -1,0 +1,629 @@
+<%- include('partials/head', { title: 'الرئيسية' }) %>
+
+  <body class="bg-background text-on-surface font-body-md">
+    <style>
+      .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+    </style>
+
+    <!-- ==================== NAVBAR ==================== -->
+    <nav class="sticky top-0 z-40 bg-surface/90 backdrop-blur border-b border-outline-variant">
+      <div class="max-w-[1240px] mx-auto px-margin flex items-center justify-between py-sm">
+        <a href="#home" class="flex items-center gap-md">
+          <img src="/logo/logo.png" alt="شعار تقسيط بلس" class="h-11 w-auto object-contain drop-shadow-sm" />
+          <div>
+            <span class="block font-headline-md text-headline-md font-bold text-primary leading-none">تقسيط بلس</span>
+            <span class="block font-caption-xs text-caption-xs text-on-surface-variant">أجهزتك بأقساط مريحة</span>
+          </div>
+        </a>
+        <div class="hidden lg:flex items-center gap-xl font-label-sm text-label-sm text-on-surface-variant">
+          <a href="#home" class="hover:text-primary transition-colors">الرئيسية</a>
+          <a href="#devices" class="hover:text-primary transition-colors">الأجهزة المتاحة</a>
+          <a href="#" onclick="openAbout(event)" class="hover:text-primary transition-colors">عروض التقسيط</a>
+          <a href="#contact" class="hover:text-primary transition-colors">تواصل معنا</a>
+        </div>
+        <div class="flex items-center gap-sm">
+          <button onclick="toggleMobileMenu()" aria-label="القائمة"
+            class="lg:hidden p-xs text-on-surface-variant hover:text-primary rounded-full transition-colors">
+            <span class="material-symbols-outlined text-[24px]">menu</span>
+          </button>
+          <a href="#devices"
+            class="inline-flex items-center gap-xs bg-primary text-on-primary rounded-full px-md py-sm font-label-sm text-label-sm font-bold shadow-sm hover:opacity-90 transition-opacity">
+            <span class="material-symbols-outlined text-[18px]">shopping_bag</span>
+            اطلب جهازك
+          </a>
+        </div>
+      </div>
+      <div id="mobileMenu" class="hidden lg:hidden border-t border-outline-variant bg-surface/95 backdrop-blur">
+        <div
+          class="max-w-[1240px] mx-auto px-margin py-sm flex flex-col font-label-sm text-label-sm text-on-surface-variant">
+          <a href="#home" onclick="closeMobileMenu()"
+            class="py-sm hover:text-primary transition-colors border-b border-outline-variant/40">الرئيسية</a>
+          <a href="#devices" onclick="closeMobileMenu()"
+            class="py-sm hover:text-primary transition-colors border-b border-outline-variant/40">الأجهزة المتاحة</a>
+          <a href="#" onclick="openAbout(event); closeMobileMenu();"
+            class="py-sm hover:text-primary transition-colors border-b border-outline-variant/40">عروض التقسيط</a>
+          <a href="#contact" onclick="closeMobileMenu()" class="py-sm hover:text-primary transition-colors">تواصل
+            معنا</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ==================== HERO ==================== -->
+    <header id="home"
+      class="relative overflow-hidden bg-gradient-to-bl from-primary-container via-primary to-primary text-on-primary">
+      <div class="absolute inset-0 opacity-20">
+        <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-primary-fixed blur-3xl"></div>
+        <div class="absolute -bottom-32 -left-16 w-[480px] h-[480px] rounded-full bg-tertiary-fixed blur-3xl"></div>
+      </div>
+      <div
+        class="relative max-w-[1240px] mx-auto px-margin py-20 lg:py-28 grid grid-cols-1 lg:grid-cols-2 gap-xl items-center">
+        <div>
+          <span
+            class="inline-flex items-center gap-xs bg-on-primary/10 border border-on-primary/25 rounded-full px-md py-xs font-caption-xs text-caption-xs mb-lg">
+            <span class="material-symbols-outlined text-[16px]">verified</span>
+            نظام تقسيط مرخّص وشفاف
+          </span>
+          <h1 class="font-display-lg text-display-lg-mobile md:text-display-lg font-black leading-tight mb-md">
+            أجهزتك المفضلة<br />بأقساط شهرية <span class="text-primary-fixed">مريحة وميسّرة</span>
+          </h1>
+          <p class="font-body-md text-body-md text-on-primary/80 max-w-xl mb-lg">
+            نقدّم لك أحدث الأجهزة الذكية والإلكترونيات بنظام تقسيط مرن وبدون تعقيدات. اختر جهازك، أبرم عقدك بدفعة أولى
+            ميسّرة، واستلم جهازك فوراً.
+          </p>
+          <div class="flex flex-wrap gap-md mb-lg">
+            <a href="#devices"
+              class="inline-flex items-center gap-sm bg-on-primary text-primary rounded-full px-xl py-md font-label-sm text-label-sm font-bold shadow-lg hover:opacity-90 transition-opacity">
+              <span class="material-symbols-outlined text-[20px]">storefront</span>
+              تصفّح الأجهزة
+            </a>
+            <a href="#" onclick="openAbout(event)"
+              class="inline-flex items-center gap-sm bg-on-primary/10 border border-on-primary/40 text-on-primary rounded-full px-xl py-md font-label-sm text-label-sm hover:bg-on-primary/20 transition-colors">
+              <span class="material-symbols-outlined text-[20px]">info</span>
+              تعرّف على عروض التقسيط
+            </a>
+          </div>
+          <div class="grid grid-cols-3 gap-md max-w-md">
+            <div class="bg-on-primary/10 border border-on-primary/20 rounded-xl p-md text-center backdrop-blur">
+              <p class="font-headline-md text-headline-md font-bold text-primary-fixed">
+                <%= deviceCount %>
+              </p>
+              <p class="font-caption-xs text-caption-xs text-on-primary/80">جهاز متاح</p>
+            </div>
+            <div class="bg-on-primary/10 border border-on-primary/20 rounded-xl p-md text-center backdrop-blur">
+              <p class="font-headline-md text-headline-md font-bold text-primary-fixed">
+                <%= availableCount %>
+              </p>
+              <p class="font-caption-xs text-caption-xs text-on-primary/80">قطعة في المخزون</p>
+            </div>
+            <div class="bg-on-primary/10 border border-on-primary/20 rounded-xl p-md text-center backdrop-blur">
+              <p class="font-headline-md text-headline-md font-bold text-primary-fixed">
+                <%= helpers.fmtMoney(minMonthly, settings.currency).replace(' ' + settings.currency, '') %></p>
+          <p class="font-caption-xs text-caption-xs text-on-primary/80">القسط يبدأ من <%= settings.currency %></p>
+        </div>
+      </div>
+    </div>
+    <div class="hidden lg:flex justify-center">
+      <div class="relative w-80 h-80">
+        <div class="absolute inset-0 rounded-[2rem] bg-on-primary/10 border border-on-primary/25 rotate-6"></div>
+        <div class="absolute inset-0 rounded-[2rem] bg-on-primary/10 border border-on-primary/25 -rotate-3"></div>
+        <div class="absolute inset-0 rounded-[2rem] bg-surface-container-lowest shadow-2xl flex flex-col items-center justify-center gap-sm text-on-surface">
+          <span class="font-label-sm text-label-sm text-on-surface-variant">دفعة أولى + أقساط شهرية</span>
+          <img src="/logo/logo.png" alt="شعار تقسيط بلس" class="h-28 w-auto object-contain mt-sm"/>
+          <span class="font-headline-md text-headline-md font-bold text-primary">تقسيط بلس</span>
+          <div class="flex items-center gap-xs mt-sm bg-primary/10 text-primary rounded-full px-md py-xs font-caption-xs text-caption-xs">
+            <span class="material-symbols-outlined text-[16px]">schedule</span>
+            أقساط تبدأ من <%= helpers.fmtMoney(minMonthly, settings.currency) %> شهرياً
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ==================== FEATURES STRIP ==================== -->
+<section class="max-w-[1240px] mx-auto px-margin -mt-lg relative z-10">
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-md">
+    <% var features = [
+      { icon: ' payments', title: 'دفعة أولى ميسّرة' , desc: 'بدءاً من ' + settings.down_payment_percent
+                  + '% فقط من قيمة الجهاز' }, { icon: 'verified_user' , title: 'بدون كفيل أو ضمان' ,
+                  desc: 'إجراءات بسيطة وسريعة بموافقة فورية' }, { icon: 'calculate' , title: 'فائدة ثابتة وشفافة' ,
+                  desc: 'نسبة فائدة ' + settings.default_interest_rate + '% واضحة منذ البداية' }, {
+                  icon: 'support_agent' , title: 'دعم وضمان معتمد' , desc: 'خدمة ما بعد البيع وصيانة على جميع الأجهزة' }
+                  ]; %>
+                  <% features.forEach(function(f) { %>
+                    <div
+                      class="bg-surface-container-lowest border border-outline-variant rounded-2xl p-md shadow-sm flex flex-col gap-sm">
+                      <div class="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+                        <span class="material-symbols-outlined">
+                          <%= f.icon %>
+                        </span>
+                      </div>
+                      <h3 class="font-title-sm text-title-sm text-on-surface font-bold">
+                        <%= f.title %>
+                      </h3>
+                      <p class="font-caption-xs text-caption-xs text-on-surface-variant leading-relaxed">
+                        <%= f.desc %>
+                      </p>
+                    </div>
+                    <% }); %>
+            </div>
+            </section>
+
+            <!-- ==================== DEVICES ==================== -->
+            <section id="devices" class="max-w-[1240px] mx-auto px-margin py-20">
+              <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-md mb-lg">
+                <div>
+                  <span
+                    class="inline-flex items-center gap-xs text-primary font-label-sm text-label-sm font-bold mb-xs">
+                    <span class="material-symbols-outlined text-[18px]">inventory_2</span>
+                    كتالوج الأجهزة
+                  </span>
+                  <h2 class="font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface">الأجهزة المتاحة
+                    للتقسيط</h2>
+                  <p class="font-body-md text-body-md text-on-surface-variant mt-xs">
+                    لدينا <span class="text-primary font-bold">
+                      <%= deviceCount %>
+                    </span> جهاز متاح بنظام التقسيط
+                    <% if (availableCount> 0) { %>و<span class="text-primary font-bold">
+                        <%= availableCount %>
+                      </span> قطعة جاهزة للاستلام الآن<% } %>
+                  </p>
+                </div>
+                <a href="#" onclick="openAbout(event)"
+                  class="inline-flex items-center gap-xs text-primary border border-primary/40 rounded-full px-md py-sm font-label-sm text-label-sm hover:bg-primary/5 transition-colors">
+                  <span class="material-symbols-outlined text-[18px]">description</span>
+                  شرح عروض التقسيط
+                </a>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-lg">
+                <% devices.forEach(function(d) { %>
+                  <div
+                    class="group bg-surface-container-lowest border border-outline-variant rounded-2xl overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col">
+                    <div
+                      class="relative h-44 <%= d.images.length ? 'bg-surface-container' : 'bg-gradient-to-br ' + d.color %> flex items-center justify-center overflow-hidden">
+                      <% if (d.images.length) { %>
+                        <img src="<%= d.images[0].url %>" alt="<%= d.name %>"
+                          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                        <% } else { %>
+                          <span
+                            class="material-symbols-outlined text-white text-[96px] drop-shadow-lg group-hover:scale-110 transition-transform duration-300"
+                            style="font-variation-settings: 'FILL' 1;">
+                            <%= d.icon %>
+                          </span>
+                          <% } %>
+                            <div class="absolute top-3 left-3 flex flex-col gap-xs">
+                              <% if (d.featured) { %>
+                                <span
+                                  class="bg-on-primary text-primary text-[11px] font-bold rounded-full px-sm py-xs shadow-sm flex items-center gap-xs">
+                                  <span class="material-symbols-outlined text-[14px]">star</span>
+                                  الأكثر طلباً
+                                </span>
+                                <% } %>
+                                  <% if (d.images.length> 1) { %>
+                                    <span
+                                      class="bg-black/50 text-white text-[11px] font-bold rounded-full px-sm py-xs shadow-sm flex items-center gap-xs backdrop-blur">
+                                      <span class="material-symbols-outlined text-[14px]">photo_library</span>
+                                      <%= d.images.length %> صور
+                                    </span>
+                                    <% } %>
+                            </div>
+                            <div class="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-black/30 to-transparent">
+                            </div>
+                    </div>
+                    <div class="p-md flex flex-col flex-1 gap-sm">
+                      <div class="flex items-center justify-between">
+                        <span
+                          class="font-caption-xs text-caption-xs bg-surface-container-high text-primary px-sm py-[2px] rounded-full">
+                          <%= d.brand || d.category %>
+                        </span>
+                        <% if (d.stock> 0) { %>
+                          <span class="font-caption-xs text-caption-xs text-[#059669] flex items-center gap-xs">
+                            <span class="w-2 h-2 rounded-full bg-[#059669]"></span>
+                            <%= d.stock %> متوفر
+                          </span>
+                          <% } else { %>
+                            <span class="font-caption-xs text-caption-xs text-secondary flex items-center gap-xs">
+                              <span class="w-2 h-2 rounded-full bg-secondary"></span>
+                              نفد المخزون
+                            </span>
+                            <% } %>
+                      </div>
+                      <h3 class="font-title-sm text-title-sm text-on-surface font-bold">
+                        <%= d.name %>
+                      </h3>
+                      <p class="font-caption-xs text-caption-xs text-on-surface-variant line-clamp-2 min-h-[32px]">
+                        <%= d.description %>
+                      </p>
+                      <div class="flex items-end justify-between border-t border-outline-variant pt-sm mt-auto">
+                        <div>
+                          <p class="font-caption-xs text-caption-xs text-on-surface-variant">السعر الكامل</p>
+                          <p class="font-title-sm text-title-sm text-on-surface font-bold" dir="ltr">
+                            <%= helpers.fmtMoney(d.price, settings.currency) %>
+                          </p>
+                        </div>
+                        <div class="text-left">
+                          <p class="font-caption-xs text-caption-xs text-on-surface-variant">القسط الشهري</p>
+                          <p class="font-headline-md text-headline-md font-bold text-primary" dir="ltr">
+                            <%= helpers.fmtMoney(d.monthlyAmount, settings.currency) %>
+                          </p>
+                        </div>
+                      </div>
+                      <div class="grid grid-cols-2 gap-sm font-caption-xs text-caption-xs text-on-surface-variant">
+                        <span class="bg-surface-container rounded-lg px-sm py-xs text-center">دفعة أولى <%=
+                            helpers.fmtMoney(d.downPayment, settings.currency) %></span>
+                        <span class="bg-surface-container rounded-lg px-sm py-xs text-center">
+                          <%= d.months %> أشهر • فائدة <%= d.interest_rate %>%
+                        </span>
+                      </div>
+                      <button data-device-id="<%= d.id %>" data-device-action="open"
+                        class="mt-sm w-full bg-primary text-on-primary rounded-xl py-sm font-label-sm text-label-sm font-bold hover:opacity-90 transition-opacity flex items-center justify-center gap-xs">
+                        <span class="material-symbols-outlined text-[18px]">visibility</span>
+                        التفاصيل وخطة التقسيط
+                      </button>
+                      <a href="#" data-device-id="<%= d.id %>" data-device-action="order"
+                        class="mt-sm w-full bg-[#25D366] hover:bg-[#1fb959] text-white rounded-xl py-sm font-label-sm text-label-sm font-bold transition-colors flex items-center justify-center gap-xs"
+                        title="اطلب هذا الجهاز الآن عبر واتساب">
+                        <svg viewBox="0 0 24 24" fill="currentColor" class="w-[18px] h-[18px] flex-shrink-0">
+                          <path
+                            d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z" />
+                        </svg>
+                        اطلب هذا الجهاز الآن
+                      </a>
+                    </div>
+                  </div>
+                  <% }); %>
+              </div>
+            </section>
+
+            <!-- ==================== HOW IT WORKS ==================== -->
+            <section class="bg-surface-container-low border-y border-outline-variant">
+              <div class="max-w-[1240px] mx-auto px-margin py-16">
+                <div class="text-center mb-lg">
+                  <span
+                    class="inline-flex items-center gap-xs text-primary font-label-sm text-label-sm font-bold mb-xs">
+                    <span class="material-symbols-outlined text-[18px]">route</span>
+                    خطوات بسيطة
+                  </span>
+                  <h2 class="font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface">كيف تحصل على
+                    جهازك بالتقسيط؟</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+                  <% var steps=[ { n: '1' , icon: 'smartphone' , title: 'اختر جهازك' ,
+                    desc: 'تصفّح الكتالوج واختر الجهاز الذي يناسب احتياجك وميزانيتك.' }, { n: '2' , icon: 'how_to_reg' ,
+                    title: 'أبرم عقدك' , desc: 'قدّم طلبك وسدّد الدفعة الأولى، ثم استلم جهازك فوراً.' }, { n: '3' ,
+                    icon: 'event_repeat' , title: 'سدّد أقساطك' ,
+                    desc: 'قسم شهري ثابت وواضح، مع تذكيرات تلقائية قبل كل استحقاق.' } ]; %>
+                    <% steps.forEach(function(s) { %>
+                      <div
+                        class="bg-surface-container-lowest border border-outline-variant rounded-2xl p-lg shadow-sm text-center relative">
+                        <span
+                          class="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-primary text-on-primary font-bold flex items-center justify-center shadow-md">
+                          <%= s.n %>
+                        </span>
+                        <div
+                          class="w-14 h-14 mx-auto rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-md">
+                          <span class="material-symbols-outlined text-[28px]">
+                            <%= s.icon %>
+                          </span>
+                        </div>
+                        <h3 class="font-title-sm text-title-sm text-on-surface font-bold mb-xs">
+                          <%= s.title %>
+                        </h3>
+                        <p class="font-body-md text-body-md text-on-surface-variant">
+                          <%= s.desc %>
+                        </p>
+                      </div>
+                      <% }); %>
+                </div>
+              </div>
+            </section>
+
+            <!-- ==================== ABOUT MODAL ==================== -->
+            <div id="aboutModal"
+              class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4 overflow-y-auto">
+              <div class="bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-2xl my-8">
+                <div
+                  class="relative p-lg bg-gradient-to-bl from-primary to-primary-container text-on-primary rounded-t-2xl">
+                  <h3 class="font-headline-md text-headline-md font-bold flex items-center gap-sm">
+                    <span class="material-symbols-outlined">verified</span>
+                    عن عروض التقسيط
+                  </h3>
+                  <p class="font-body-md text-body-md text-on-primary/85 mt-xs">نظام مرن وشفاف يمنحك جهازك اليوم وتدفع
+                    بالتقسيط المريح.</p>
+                  <button onclick="closeAbout()"
+                    class="absolute top-4 left-4 w-9 h-9 rounded-full bg-on-primary/15 hover:bg-on-primary/30 text-on-primary flex items-center justify-center transition-colors">
+                    <span class="material-symbols-outlined">close</span>
+                  </button>
+                </div>
+                <div class="p-lg space-y-lg max-h-[70vh] overflow-y-auto custom-scrollbar">
+                  <section>
+                    <h4 class="font-title-sm text-title-sm text-primary font-bold mb-sm flex items-center gap-xs">
+                      <span class="material-symbols-outlined text-[20px]">storefront</span>
+                      من نحن
+                    </h4>
+                    <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                      "تقسيط بلس" شركة متخصصة في بيع الأجهزة الذكية والإلكترونيات بنظام التقسيط المريح. نؤمن بأن امتلاك
+                      أحدث الأجهزة يجب ألا يكون عبئاً مالياً، لذلك نوفّر لك خطط سداد مرنة تناسب ميزانيتك مع شفافية كاملة
+                      في كل الأرقام منذ لحظة اختيار الجهاز.
+                    </p>
+                  </section>
+                  <section>
+                    <h4 class="font-title-sm text-title-sm text-primary font-bold mb-sm flex items-center gap-xs">
+                      <span class="material-symbols-outlined text-[20px]">calculate</span>
+                      كيف تعمل خطة التقسيط؟
+                    </h4>
+                    <ul class="space-y-sm font-body-md text-body-md text-on-surface-variant">
+                      <li class="flex items-start gap-sm bg-surface-container rounded-xl p-sm">
+                        <span class="material-symbols-outlined text-primary text-[20px] mt-[2px]">point_scale</span>
+                        <span><b class="text-on-surface">سعر الجهاز الكامل:</b> هو السعر الرسمي للجهاز كما يظهر في
+                          الكتالوج.</span>
+                      </li>
+                      <li class="flex items-start gap-sm bg-surface-container rounded-xl p-sm">
+                        <span class="material-symbols-outlined text-primary text-[20px] mt-[2px]">percent</span>
+                        <span><b class="text-on-surface">فائدة ثابتة:</b> تبلغ النسبة الحالية <b
+                            class="text-on-surface">
+                            <%= settings.default_interest_rate %>%
+                          </b> وتُضاف على سعر الجهاز بوضوح.</span>
+                      </li>
+                      <li class="flex items-start gap-sm bg-surface-container rounded-xl p-sm">
+                        <span class="material-symbols-outlined text-primary text-[20px] mt-[2px]">savings</span>
+                        <span><b class="text-on-surface">الدفعة الأولى:</b> تدفع <b class="text-on-surface">
+                            <%= settings.down_payment_percent %>%
+                          </b> من إجمالي المبلغ (السعر + الفائدة)، والمتبقي يُقسّط على أشهر متساوية.</span>
+                      </li>
+                      <li class="flex items-start gap-sm bg-surface-container rounded-xl p-sm">
+                        <span class="material-symbols-outlined text-primary text-[20px] mt-[2px]">calendar_month</span>
+                        <span><b class="text-on-surface">القسط الشهري:</b> قيمة ثابتة كل شهر حتى اكتمال السداد، مع
+                          إشعارات تذكير قبل كل استحقاق.</span>
+                      </li>
+                    </ul>
+                  </section>
+                  <section>
+                    <h4 class="font-title-sm text-title-sm text-primary font-bold mb-sm flex items-center gap-xs">
+                      <span class="material-symbols-outlined text-[20px]">workspace_premium</span>
+                      لماذا تختارنا؟
+                    </h4>
+                    <div class="grid grid-cols-2 gap-sm">
+                      <div class="bg-surface-container rounded-xl p-sm flex items-center gap-xs"><span
+                          class="material-symbols-outlined text-primary text-[18px]">check_circle</span><span
+                          class="font-caption-xs text-caption-xs">موافقة فورية وسريعة</span></div>
+                      <div class="bg-surface-container rounded-xl p-sm flex items-center gap-xs"><span
+                          class="material-symbols-outlined text-primary text-[18px]">check_circle</span><span
+                          class="font-caption-xs text-caption-xs">بدون كفيل أو تحويل راتب</span></div>
+                      <div class="bg-surface-container rounded-xl p-sm flex items-center gap-xs"><span
+                          class="material-symbols-outlined text-primary text-[18px]">check_circle</span><span
+                          class="font-caption-xs text-caption-xs">أسعار ثابتة وشفافة</span></div>
+                      <div class="bg-surface-container rounded-xl p-sm flex items-center gap-xs"><span
+                          class="material-symbols-outlined text-primary text-[18px]">check_circle</span><span
+                          class="font-caption-xs text-caption-xs">ضمان وصيانة معتمدة</span></div>
+                    </div>
+                  </section>
+                  <section class="bg-primary/5 border border-primary/20 rounded-xl p-md flex items-center gap-md">
+                    <div
+                      class="w-11 h-11 rounded-full bg-primary text-on-primary flex items-center justify-center flex-shrink-0">
+                      <span class="material-symbols-outlined">support_agent</span>
+                    </div>
+                    <div>
+                      <p class="font-label-sm text-label-sm text-on-surface font-bold mb-xs">هل لديك سؤال؟</p>
+                      <p class="font-caption-xs text-caption-xs text-on-surface-variant">فريقنا جاهز لمساعدتك في اختيار
+                        الجهاز المناسب ووضع خطة السداد المثالية لك.</p>
+                    </div>
+                  </section>
+                </div>
+                <div class="p-lg border-t border-outline-variant flex justify-end">
+                  <button onclick="closeAbout()"
+                    class="px-xl py-sm bg-primary text-on-primary rounded-xl font-label-sm text-label-sm font-bold hover:opacity-90 transition-opacity">مفهوم،
+                    شكراً</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ==================== DEVICE DETAILS MODAL ==================== -->
+            <div id="deviceModal"
+              class="hidden fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4 overflow-y-auto">
+              <div class="bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-xl my-8">
+                <div id="deviceModalBody" class="p-lg max-h-[85vh] overflow-y-auto custom-scrollbar"></div>
+              </div>
+            </div>
+
+            <!-- ==================== FOOTER ==================== -->
+            <footer id="contact" class="bg-primary text-on-primary">
+              <div class="max-w-[1240px] mx-auto px-margin py-14 grid grid-cols-1 md:grid-cols-3 gap-lg">
+                <div>
+                  <div class="flex items-center gap-md mb-md">
+                    <div class="w-10 h-10 rounded-xl bg-on-primary/10 flex items-center justify-center">
+                      <span class="material-symbols-outlined fill">devices_other</span>
+                    </div>
+                    <div>
+                      <span class="block font-headline-md text-headline-md font-bold">تقسيط بلس</span>
+                      <span class="font-caption-xs text-caption-xs text-on-primary/70">أجهزتك بأقساط مريحة</span>
+                    </div>
+                  </div>
+                  <p class="font-body-md text-body-md text-on-primary/80 leading-relaxed">نوفر أحدث الأجهزة الذكية
+                    والإلكترونيات بنظام تقسيط مرن وشفاف، مع دعم كامل وضمان معتمد لجميع منتجاتنا.</p>
+                </div>
+                <div>
+                  <h4 class="font-title-sm text-title-sm font-bold mb-md">روابط سريعة</h4>
+                  <ul class="space-y-sm font-body-md text-body-md text-on-primary/80">
+                    <li><a href="#home" class="hover:text-primary-fixed transition-colors">الرئيسية</a></li>
+                    <li><a href="#devices" class="hover:text-primary-fixed transition-colors">الأجهزة المتاحة</a></li>
+                    <li><a href="#" onclick="openAbout(event)" class="hover:text-primary-fixed transition-colors">عروض
+                        التقسيط</a></li>
+                    <li><a href="#contact" class="hover:text-primary-fixed transition-colors">تواصل معنا</a></li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 class="font-title-sm text-title-sm font-bold mb-md">تواصل معنا</h4>
+                  <ul class="space-y-sm font-body-md text-body-md text-on-primary/80">
+                    <li class="flex items-center gap-sm"><span
+                        class="material-symbols-outlined text-[18px]">call</span><span dir="ltr">800 123 4567</span>
+                    </li>
+                    <li class="flex items-center gap-sm"><span
+                        class="material-symbols-outlined text-[18px]">mail</span><span
+                        dir="ltr">info@taqseet-plus.com</span></li>
+                    <li class="flex items-center gap-sm"><span
+                        class="material-symbols-outlined text-[18px]">location_on</span><span>الرياض - حي العليا - طريق
+                        الملك فهد</span></li>
+                    <li class="flex items-center gap-sm"><span
+                        class="material-symbols-outlined text-[18px]">schedule</span><span>السبت - الخميس: 9ص -
+                        10م</span></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="border-t border-on-primary/20">
+                <div
+                  class="max-w-[1240px] mx-auto px-margin py-md flex flex-col md:flex-row items-center justify-between gap-sm font-caption-xs text-caption-xs text-on-primary/70">
+                  <span>© <%= new Date().getFullYear() %> تقسيط بلس. جميع الحقوق محفوظة.</span>
+                  <span>نظام تقسيط مرن • دفع ميسّر • خدمة معتمدة</span>
+                </div>
+              </div>
+            </footer>
+
+            <%- include('partials/scripts') %>
+              <script>
+                var devicesData = <%- JSON.stringify(devices).replace(new RegExp('<', 'g'), '\\u003c') %>;
+                var currency = '<%= settings.currency %>';
+                var WHATSAPP_NUMBER = '963991293755';
+
+                function orderViaWhatsApp(id) {
+                  var d = devicesData.find(function (x) { return x.id === id; });
+                  if (!d) return;
+                  var lines = [
+                    'مرحباً، أرغب بطلب هذا الجهاز:',
+                    'كود الجهاز: #' + d.id,
+                    'اسم الجهاز: ' + d.name,
+                    'العلامة التجارية: ' + (d.brand || '-'),
+                    'الفئة: ' + (d.category || '-'),
+                    'السعر الكامل: ' + formatMoney(d.price) + ' ' + currency,
+                    'القسط الشهري: ' + formatMoney(d.monthlyAmount) + ' ' + currency,
+                    'التفاصيل: ' + (d.description || '-')
+                  ];
+                  var url = 'https://wa.me/' + WHATSAPP_NUMBER + '?text=' + encodeURIComponent(lines.join('\n'));
+                  window.open(url, '_blank');
+                }
+
+                function toggleMobileMenu() {
+                  document.getElementById('mobileMenu').classList.toggle('hidden');
+                }
+                function closeMobileMenu() {
+                  document.getElementById('mobileMenu').classList.add('hidden');
+                }
+
+                function openAbout(e) {
+                  if (e) e.preventDefault();
+                  document.getElementById('aboutModal').classList.remove('hidden');
+                  document.body.style.overflow = 'hidden';
+                }
+                function closeAbout() {
+                  document.getElementById('aboutModal').classList.add('hidden');
+                  document.body.style.overflow = '';
+                }
+                document.getElementById('aboutModal').addEventListener('click', function (e) {
+                  if (e.target === this) closeAbout();
+                });
+
+                var currentDeviceImages = [];
+
+                function deviceImageHtml(d) {
+                  var imgs = d.images || [];
+                  var closeBtn = '<button onclick="closeDevice()" class="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center z-10"><span class="material-symbols-outlined text-[20px]">close</span></button>';
+                  if (imgs.length) {
+                    var thumbs = imgs.map(function (img, i) {
+                      return '<button type="button" data-i="' + i + '" onclick="setDeviceImage(' + i + ')" class="device-thumb w-14 h-14 rounded-lg overflow-hidden ring-2 ring-offset-1 ' + (i === 0 ? 'ring-primary' : 'ring-transparent') + ' hover:ring-primary transition-all border border-outline-variant"><img src="' + img.url + '" alt="صورة" class="w-full h-full object-cover"/></button>';
+                    }).join('');
+                    return '<div class="relative h-72 bg-surface-container-low rounded-xl border border-outline-variant overflow-hidden">' +
+                      '<img id="deviceMainImg" src="' + imgs[0].url + '" alt="' + escapeHtml(d.name) + '" class="w-full h-full object-contain p-sm"/>' +
+                      closeBtn +
+                      (imgs.length > 1
+                        ? '<button type="button" onclick="setDeviceImage(currentDeviceImageIndex - 1)" class="absolute top-1/2 right-2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/30 hover:bg-black/50 text-white flex items-center justify-center z-10"><span class="material-symbols-outlined">chevron_right</span></button>' +
+                        '<button type="button" onclick="setDeviceImage(currentDeviceImageIndex + 1)" class="absolute top-1/2 left-2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/30 hover:bg-black/50 text-white flex items-center justify-center z-10"><span class="material-symbols-outlined">chevron_left</span></button>' +
+                        '<div id="deviceThumbs" class="absolute bottom-2 inset-x-0 flex justify-center gap-sm flex-wrap px-md">' + thumbs + '</div>'
+                        : '') +
+                      '</div>';
+                  }
+                  return '<div class="relative h-40 rounded-xl bg-gradient-to-br ' + d.color + ' flex items-center justify-center overflow-hidden">' +
+                    '<span class="material-symbols-outlined text-white text-[88px]" style="font-variation-settings: \'FILL\' 1;">' + d.icon + '</span>' +
+                    closeBtn +
+                    '</div>';
+                }
+
+                function setDeviceImage(i) {
+                  if (!currentDeviceImages.length) return;
+                  if (i < 0) i = currentDeviceImages.length - 1;
+                  if (i >= currentDeviceImages.length) i = 0;
+                  currentDeviceImageIndex = i;
+                  document.getElementById('deviceMainImg').src = currentDeviceImages[i].url;
+                  document.querySelectorAll('#deviceThumbs .device-thumb').forEach(function (t, idx) {
+                    t.classList.toggle('ring-primary', idx === i);
+                    t.classList.toggle('ring-transparent', idx !== i);
+                  });
+                }
+                var currentDeviceImageIndex = 0;
+
+                function openDevice(id) {
+                  var d = devicesData.find(function (x) { return x.id === id; });
+                  if (!d) return;
+                  currentDeviceImages = d.images || [];
+                  currentDeviceImageIndex = 0;
+                  var el = document.getElementById('deviceModalBody');
+                  el.innerHTML =
+                    deviceImageHtml(d) +
+                    '<div class="p-lg">' +
+                    '<div class="flex items-center justify-between mb-xs">' +
+                    '<h3 class="font-headline-md text-headline-md font-bold text-on-surface">' + escapeHtml(d.name) + '</h3>' +
+                    (d.stock > 0 ? '<span class="font-caption-xs text-caption-xs text-[#059669] bg-[#ecfdf5] border border-[#a7f3d0] rounded-full px-sm py-xs">متوفر (' + d.stock + ')</span>' : '<span class="font-caption-xs text-caption-xs text-secondary border border-outline-variant rounded-full px-sm py-xs">نفد المخزون</span>') +
+                    '</div>' +
+                    '<span class="font-caption-xs text-caption-xs bg-surface-container-high text-primary px-sm py-[2px] rounded-full">' + escapeHtml(d.brand || d.category || '') + '</span>' +
+                    '<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed mt-md mb-lg">' + escapeHtml(d.description || '') + '</p>' +
+                    '<div class="grid grid-cols-2 gap-md mb-lg">' +
+                    '<div class="bg-surface-container rounded-xl p-md"><p class="font-caption-xs text-caption-xs text-on-surface-variant mb-xs">السعر الكامل</p><p class="font-title-sm text-title-sm font-bold text-on-surface" dir="ltr">' + formatMoney(d.price) + ' ' + currency + '</p></div>' +
+                    '<div class="bg-surface-container rounded-xl p-md"><p class="font-caption-xs text-caption-xs text-on-surface-variant mb-xs">المبلغ بعد الفائدة</p><p class="font-title-sm text-title-sm font-bold text-on-surface" dir="ltr">' + formatMoney(d.totalWithInterest) + ' ' + currency + '</p></div>' +
+                    '<div class="bg-primary-container text-on-primary-fixed rounded-xl p-md"><p class="font-caption-xs text-caption-xs opacity-90 mb-xs">الدفعة الأولى</p><p class="font-title-sm text-title-sm font-bold" dir="ltr">' + formatMoney(d.downPayment) + ' ' + currency + '</p></div>' +
+                    '<div class="bg-primary text-on-primary rounded-xl p-md"><p class="font-caption-xs text-caption-xs opacity-90 mb-xs">القسط الشهري</p><p class="font-headline-md text-headline-md font-bold" dir="ltr">' + formatMoney(d.monthlyAmount) + ' ' + currency + '</p></div>' +
+                    '</div>' +
+                    '<div class="flex items-center justify-between bg-surface-container-low border border-outline-variant rounded-xl p-sm font-caption-xs text-caption-xs text-on-surface-variant mb-lg">' +
+                    '<span>عدد الأشهر: <b class="text-on-surface">' + d.months + '</b></span>' +
+                    '<span>نسبة الفائدة: <b class="text-on-surface">' + d.interest_rate + '%</b></span>' +
+                    '<span>دفعة أولى: <b class="text-on-surface">' + d.down_payment_percent + '%</b></span>' +
+                    '</div>' +
+                    '<div class="flex gap-md">' +
+                    '<button onclick="closeDevice()" class="flex-1 px-xl py-sm border border-outline text-secondary rounded-xl font-label-sm text-label-sm hover:bg-surface-container transition-colors">إغلاق</button>' +
+                    '<a href="#" onclick="orderViaWhatsApp(' + d.id + ')" class="flex-1 text-center px-xl py-sm bg-[#25D366] hover:bg-[#1fb959] text-white rounded-xl font-label-sm text-label-sm font-bold transition-colors inline-flex items-center justify-center gap-xs"><svg viewBox="0 0 24 24" fill="currentColor" class="w-[18px] h-[18px]"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg> اطلب هذا الجهاز الآن</a>' +
+                    '</div>' +
+                    '</div>';
+                  document.getElementById('deviceModal').classList.remove('hidden');
+                  document.body.style.overflow = 'hidden';
+                }
+                function closeDevice() {
+                  document.getElementById('deviceModal').classList.add('hidden');
+                  document.body.style.overflow = '';
+                }
+                document.getElementById('deviceModal').addEventListener('click', function (e) {
+                  if (e.target === this) closeDevice();
+                });
+                document.addEventListener('click', function (e) {
+                  var btn = e.target.closest('[data-device-id]');
+                  if (!btn) return;
+                  var id = parseInt(btn.getAttribute('data-device-id'), 10);
+                  if (btn.getAttribute('data-device-action') === 'order') {
+                    e.preventDefault();
+                    orderViaWhatsApp(id);
+                  } else {
+                    openDevice(id);
+                  }
+                });
+              </script>
+  </body>
+
+  </html>

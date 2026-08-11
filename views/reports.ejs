@@ -1,0 +1,166 @@
+<%- include('partials/head', { title: 'التقارير' }) %>
+<body class="bg-background text-on-background flex flex-col md:flex-row h-screen overflow-hidden">
+<%- include('partials/sidebar', { active: active }) %>
+<main class="flex-1 md:mr-[280px] h-screen overflow-y-auto bg-surface flex flex-col relative">
+  <%- include('partials/header', { pageTitle: 'التقارير التحليلية', searchPlaceholder: 'بحث عن عميل، تقرير...' }) %>
+  <div class="p-lg md:p-xl flex-1 max-w-[1240px] mx-auto w-full">
+    <div class="flex justify-between items-end mb-lg">
+      <div>
+        <h2 class="font-display-lg text-display-lg text-on-surface mb-base">التقارير التحليلية</h2>
+        <p class="font-body-md text-body-md text-secondary">نظرة عامة على الأداء المالي وحالة الأقساط</p>
+      </div>
+      <a href="/api/reports/export">
+        <button class="bg-surface-container-lowest text-primary border border-outline-variant px-md py-sm rounded-lg font-label-sm text-label-sm flex items-center gap-sm hover:bg-surface-container-low transition-colors">
+          <span class="material-symbols-outlined text-[18px]">download</span>
+          تصدير التقرير
+        </button>
+      </a>
+    </div>
+
+    <!-- Dashboard Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-lg mb-lg">
+      <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-lg shadow-sm">
+        <div class="flex justify-between items-start mb-md">
+          <div>
+            <p class="font-label-sm text-label-sm text-secondary mb-xs">إجمالي الأرباح المحصلة (30 يوم)</p>
+            <h3 class="font-headline-md text-headline-md text-on-surface"><%= helpers.fmtMoney(totalProfit, settings.currency) %></h3>
+          </div>
+          <div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center text-primary">
+            <span class="material-symbols-outlined text-[24px]">trending_up</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-sm text-primary">
+          <span class="material-symbols-outlined text-[16px]">arrow_upward</span>
+          <span class="font-label-sm text-label-sm">مقارنة بالشهر السابق</span>
+        </div>
+      </div>
+
+      <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-lg shadow-sm">
+        <div class="flex justify-between items-start mb-md">
+          <div>
+            <p class="font-label-sm text-label-sm text-secondary mb-xs">أقساط مستحقة (7 أيام)</p>
+            <h3 class="font-headline-md text-headline-md text-on-surface"><%= helpers.fmtMoney(due7Sum, settings.currency) %></h3>
+          </div>
+          <div class="w-12 h-12 rounded-full bg-surface-container-highest flex items-center justify-center text-primary-container">
+            <span class="material-symbols-outlined text-[24px]">calendar_today</span>
+          </div>
+        </div>
+        <% var collectedPct = Math.min(100, Math.round(totalProfit / ((totalProfit + due7Sum) || 1) * 100)); %>
+        <div class="w-full bg-surface-container-low h-2 rounded-full mt-4">
+          <div class="bg-primary h-2 rounded-full" style="width: <%= collectedPct %>%"></div>
+        </div>
+        <p class="font-caption-xs text-caption-xs text-secondary mt-2">تم تحصيل <%= collectedPct %>% من المستهدف</p>
+      </div>
+
+      <div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-lg shadow-sm border-l-4 border-l-error">
+        <div class="flex justify-between items-start mb-md">
+          <div>
+            <p class="font-label-sm text-label-sm text-secondary mb-xs">متأخرات غير محصلة</p>
+            <h3 class="font-headline-md text-headline-md text-error"><%= helpers.fmtMoney(overdueSum, settings.currency) %></h3>
+          </div>
+          <div class="w-12 h-12 rounded-full bg-error-container flex items-center justify-center text-error">
+            <span class="material-symbols-outlined text-[24px]">warning</span>
+          </div>
+        </div>
+        <p class="font-label-sm text-label-sm text-on-surface-variant">عدد العملاء المتأخرين: <strong><%= overdueCustomersCount %> عميل</strong></p>
+      </div>
+    </div>
+
+    <!-- Main Data Section -->
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-lg">
+      <!-- Overdue Customers Table -->
+      <div class="xl:col-span-2 bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden flex flex-col h-[500px]">
+        <div class="p-lg border-b border-outline-variant bg-surface-bright flex justify-between items-center">
+          <h3 class="font-title-sm text-title-sm text-on-surface">تقرير العملاء المتأخرين</h3>
+          <button onclick="sendBulkReminders()" class="bg-surface-container-low text-primary border border-primary px-md py-sm rounded-lg font-label-sm text-label-sm flex items-center gap-sm hover:bg-primary-fixed transition-colors">
+            <span class="material-symbols-outlined text-[18px]">send</span>
+            إرسال رسائل تذكير جماعية
+          </button>
+        </div>
+        <div class="overflow-auto flex-1 p-md">
+          <table class="w-full text-right border-collapse">
+            <thead class="bg-[#F1F5F9] sticky top-0">
+              <tr>
+                <th class="p-sm font-label-sm text-label-sm text-secondary border-b border-outline-variant">اسم العميل</th>
+                <th class="p-sm font-label-sm text-label-sm text-secondary border-b border-outline-variant">رقم التواصل</th>
+                <th class="p-sm font-label-sm text-label-sm text-secondary border-b border-outline-variant">المبلغ المتأخر</th>
+                <th class="p-sm font-label-sm text-label-sm text-secondary border-b border-outline-variant">أيام التأخير</th>
+                <th class="p-sm font-label-sm text-label-sm text-secondary border-b border-outline-variant">الإجراء</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (overdueTable.length === 0) { %>
+              <tr><td colspan="5" class="p-sm text-center text-secondary py-8">لا توجد متأخرات حالياً</td></tr>
+              <% } %>
+              <% overdueTable.forEach(function(o) { %>
+              <tr class="hover:bg-surface-container-low border-b border-outline-variant">
+                <td class="p-sm font-body-md text-body-md text-on-surface">
+                  <a href="/rent/customers/<%= o.customer_id %>" class="hover:text-primary transition-colors"><%= o.customer_name %></a>
+                </td>
+                <td class="p-sm font-body-md text-body-md text-secondary" dir="ltr"><%= o.phone %></td>
+                <td class="p-sm font-body-md text-body-md text-error font-bold"><%= helpers.fmtMoney(o.amount, settings.currency) %></td>
+                <td class="p-sm font-body-md text-body-md text-on-surface-variant"><%= Math.max(1, Math.round(o.late_days)) %> يوم</td>
+                <td class="p-sm">
+                  <a href="/rent/register-payment?customer=<%= o.customer_id %>" class="text-primary hover:text-primary-container"><span class="material-symbols-outlined text-[20px]">chat</span></a>
+                </td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Charts & Visuals -->
+      <div class="xl:col-span-1 flex flex-col gap-lg h-[500px]">
+        <!-- Sales Bar Chart -->
+        <div class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm p-lg flex-1 flex flex-col">
+          <h3 class="font-title-sm text-title-sm text-on-surface mb-md">المبيعات (آخر 7 أيام)</h3>
+          <div class="flex-1 bg-surface-container-low rounded-lg relative overflow-hidden flex items-end justify-between p-sm">
+            <% sales.forEach(function(s) { %>
+            <div class="w-1/6 bg-primary opacity-<%= s.value > 0 ? 90 : 30 %> h-[<%= Math.max(s.value > 0 ? Math.round(s.value / salesMax * 90) : 5, 4) %>%] rounded-t-sm" title="<%= helpers.fmtMoney(s.value, settings.currency) %>"></div>
+            <% }); %>
+          </div>
+          <div class="flex justify-between mt-sm text-secondary font-caption-xs text-caption-xs">
+            <% sales.forEach(function(s) { %>
+            <span><%= s.label %></span>
+            <% }); %>
+          </div>
+        </div>
+
+        <!-- Due in 7 days list -->
+        <div class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm p-lg flex-1 overflow-auto">
+          <h3 class="font-title-sm text-title-sm text-on-surface mb-md">مستحقة خلال 7 أيام</h3>
+          <ul class="flex flex-col gap-sm">
+            <% if (due7.length === 0) { %>
+            <li class="text-secondary text-center py-md text-body-md font-body-md">لا توجد استحقاقات خلال 7 أيام</li>
+            <% } %>
+            <% due7.forEach(function(i) { %>
+            <li class="flex justify-between items-center p-sm bg-surface-bright rounded border border-outline-variant">
+              <div>
+                <p class="font-label-sm text-label-sm text-on-surface">
+                  <a href="/rent/customers/<%= i.customer_id %>" class="hover:text-primary"><%= i.customer_name %></a>
+                </p>
+                <p class="font-caption-xs text-caption-xs text-secondary"><%= helpers.fmtDate(i.due_date) %></p>
+              </div>
+              <span class="font-label-sm text-label-sm font-bold text-primary"><%= helpers.fmtMoney(i.amount, settings.currency) %></span>
+            </li>
+            <% }); %>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<%- include('partials/scripts') %>
+<script>
+  function sendBulkReminders() {
+    fetch('/api/reminders/bulk', { method: 'POST' })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        if (j.ok) { showToast('تم إرسال ' + j.count + ' رسالة تذكير', 'success'); }
+        else { showToast('حدث خطأ', 'error'); }
+      });
+  }
+</script>
+</body>
+</html>

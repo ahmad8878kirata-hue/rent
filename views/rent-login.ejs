@@ -1,0 +1,69 @@
+<%- include('partials/head', { title: 'تسجيل الدخول' }) %>
+<body class="bg-background text-on-surface font-body-md min-h-screen flex items-center justify-center p-4" style="background-image: radial-gradient(ellipse at top, #e5eeff 0%, #f8f9ff 55%);">
+  <div class="w-full max-w-md">
+    <div class="bg-surface-container-lowest border border-outline-variant rounded-2xl shadow-xl overflow-hidden">
+      <div class="bg-gradient-to-bl from-primary to-primary-container text-on-primary p-lg text-center">
+        <div class="w-14 h-14 mx-auto rounded-2xl bg-on-primary/15 flex items-center justify-center mb-sm">
+          <span class="material-symbols-outlined text-[32px] fill">lock</span>
+        </div>
+        <h1 class="font-headline-md text-headline-md font-bold">لوحة إدارة نظام الأقساط</h1>
+        <p class="font-body-md text-body-md text-on-primary/85 mt-xs">منطقة محمية - يرجى تسجيل الدخول للمتابعة</p>
+      </div>
+      <form id="loginForm" class="p-lg space-y-md" autocomplete="off">
+        <div class="flex items-center gap-sm bg-surface-container-low border border-outline-variant rounded-xl px-md py-sm focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all">
+          <span class="material-symbols-outlined text-on-surface-variant">person</span>
+          <input id="username" class="flex-1 bg-transparent border-none focus:ring-0 p-0 font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant" placeholder="اسم المستخدم" type="text" autocomplete="off"/>
+        </div>
+        <div class="flex items-center gap-sm bg-surface-container-low border border-outline-variant rounded-xl px-md py-sm focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-all">
+          <span class="material-symbols-outlined text-on-surface-variant">key</span>
+          <input id="password" class="flex-1 bg-transparent border-none focus:ring-0 p-0 font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant" placeholder="كلمة المرور" type="password" autocomplete="off"/>
+        </div>
+        <div id="loginError" class="hidden bg-error-container text-on-error-container border border-error/30 rounded-xl p-sm font-caption-xs text-caption-xs"></div>
+        <button id="loginBtn" type="submit" class="w-full bg-primary text-on-primary rounded-xl py-sm font-label-sm text-label-sm font-bold hover:opacity-90 transition-opacity flex items-center justify-center gap-xs shadow-sm">
+          <span class="material-symbols-outlined text-[18px]">login</span>
+          تسجيل الدخول
+        </button>
+      </form>
+    </div>
+    <p class="text-center font-caption-xs text-caption-xs text-on-surface-variant mt-md flex items-center justify-center gap-xs">
+      <span class="material-symbols-outlined text-[16px]">admin_panel_settings</span>
+      هذه الصفحة مخصصة لموظفي الإدارة فقط
+    </p>
+    <a href="/" class="text-center block font-label-sm text-label-sm text-primary mt-md hover:underline">← العودة إلى الموقع</a>
+  </div>
+</body>
+<%- include('partials/scripts') %>
+<script>
+  document.getElementById('loginForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var btn = document.getElementById('loginBtn');
+    btn.disabled = true;
+    btn.classList.add('opacity-60');
+    fetch('/rent/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username: document.getElementById('username').value.trim(),
+        password: document.getElementById('password').value
+      })
+    }).then(function (r) {
+      return r.json().then(function (j) { return { ok: r.ok, body: j }; });
+    }).then(function (res) {
+      if (res.ok) { window.location.href = res.body.redirect; }
+      else {
+        var err = document.getElementById('loginError');
+        err.textContent = res.body.error || 'حدث خطأ في تسجيل الدخول';
+        err.classList.remove('hidden');
+        btn.disabled = false;
+        btn.classList.remove('opacity-60');
+      }
+    }).catch(function () {
+      var err = document.getElementById('loginError');
+      err.textContent = 'حدث خطأ في الاتصال';
+      err.classList.remove('hidden');
+      btn.disabled = false;
+      btn.classList.remove('opacity-60');
+    });
+  });
+</script>
+</html>

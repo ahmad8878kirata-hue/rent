@@ -1,0 +1,173 @@
+<%- include('partials/head', { title: 'إضافة عميل' }) %>
+<body class="bg-background text-on-surface min-h-screen font-body-md flex md:flex-row flex-col">
+<%- include('partials/sidebar', { active: active }) %>
+<main class="flex-1 md:mr-[280px] p-margin lg:p-xl w-full max-w-[1240px] mx-auto min-h-screen pb-32 md:pb-margin flex flex-col gap-lg">
+  <div class="flex items-start gap-md mb-md">
+    <button onclick="openMobileSidebar()" class="md:hidden p-xs text-secondary hover:bg-surface-container-high rounded-full transition-colors" aria-label="القائمة">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+    <div class="flex flex-col gap-xs">
+      <h2 class="font-display-lg text-display-lg md:text-display-lg text-on-surface">إضافة عميل جديد</h2>
+      <p class="font-body-md text-body-md text-secondary">أدخل بيانات العميل وتفاصيل خطة التقسيط للجهاز.</p>
+    </div>
+  </div>
+
+  <form id="addCustomerForm" class="grid grid-cols-1 lg:grid-cols-12 gap-lg bg-surface-container-lowest p-lg rounded-xl border border-outline-variant shadow-sm">
+    <!-- Section 1: Customer Details -->
+    <fieldset class="lg:col-span-7 flex flex-col gap-lg">
+      <div class="border-b border-outline-variant pb-sm">
+        <h3 class="font-title-sm text-title-sm text-primary flex items-center gap-sm">
+          <span class="material-symbols-outlined">person</span>
+          البيانات الشخصية
+        </h3>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+        <div class="flex flex-col gap-xs">
+          <label class="font-label-sm text-label-sm text-on-surface" for="fullName">الاسم الرباعي <span class="text-error">*</span></label>
+          <input class="w-full bg-surface border border-outline rounded-lg px-md py-sm font-body-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" id="fullName" name="fullName" placeholder="أدخل الاسم الكامل" required type="text"/>
+        </div>
+        <div class="flex flex-col gap-xs">
+          <label class="font-label-sm text-label-sm text-on-surface" for="phone">رقم الهاتف <span class="text-error">*</span></label>
+          <input class="w-full bg-surface border border-outline rounded-lg px-md py-sm font-body-md text-left focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" dir="ltr" id="phone" name="phone" placeholder="05X XXX XXXX" required type="tel"/>
+        </div>
+      </div>
+      <div class="flex flex-col gap-xs">
+        <label class="font-label-sm text-label-sm text-on-surface" for="nationalId">رقم الهوية <span class="text-error">*</span></label>
+        <input class="w-full bg-surface border border-outline rounded-lg px-md py-sm font-body-md text-left focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" dir="ltr" id="nationalId" name="nationalId" placeholder="10XXXXXXXX" required type="text"/>
+      </div>
+      <div class="flex flex-col gap-xs">
+        <label class="font-label-sm text-label-sm text-on-surface">العنوان التفصيلي <span class="text-error">*</span></label>
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-sm bg-surface-container rounded-lg p-sm">
+          <input class="col-span-1 bg-surface-container-lowest border border-outline rounded-md px-sm py-sm text-label-sm focus:ring-1 focus:ring-primary" name="country" placeholder="الدولة" required type="text"/>
+          <input class="col-span-1 bg-surface-container-lowest border border-outline rounded-md px-sm py-sm text-label-sm focus:ring-1 focus:ring-primary" name="city" placeholder="المدينة" required type="text"/>
+          <input class="col-span-1 bg-surface-container-lowest border border-outline rounded-md px-sm py-sm text-label-sm focus:ring-1 focus:ring-primary" name="district" placeholder="الحي" required type="text"/>
+          <input class="col-span-1 md:col-span-1 bg-surface-container-lowest border border-outline rounded-md px-sm py-sm text-label-sm focus:ring-1 focus:ring-primary" name="street" placeholder="الشارع" type="text"/>
+          <input class="col-span-2 md:col-span-1 bg-surface-container-lowest border border-outline rounded-md px-sm py-sm text-label-sm focus:ring-1 focus:ring-primary" name="building" placeholder="رقم البناية" type="text"/>
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- Section 2: Device Details -->
+    <fieldset class="lg:col-span-5 flex flex-col gap-lg lg:border-r lg:border-outline-variant lg:pr-lg lg:mr-xs">
+      <div class="border-b border-outline-variant pb-sm">
+        <h3 class="font-title-sm text-title-sm text-primary flex items-center gap-sm">
+          <span class="material-symbols-outlined">smartphone</span>
+          بيانات الجهاز
+        </h3>
+      </div>
+      <div class="flex flex-col gap-xs">
+        <label class="font-label-sm text-label-sm text-on-surface" for="deviceType">نوع الجهاز <span class="text-error">*</span></label>
+        <div class="relative">
+          <select class="w-full bg-surface border border-outline rounded-lg px-md py-sm font-body-md appearance-none focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all" id="deviceType" name="deviceType" required>
+            <option disabled selected value="">اختر النوع</option>
+            <% deviceTypes.forEach(function(t) { %>
+            <option value="<%= t.name %>"><%= t.name %></option>
+            <% }); %>
+            <option value="أخرى">أخرى</option>
+          </select>
+          <span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none">arrow_drop_down</span>
+        </div>
+      </div>
+      <div class="flex flex-col gap-xs">
+        <label class="font-label-sm text-label-sm text-on-surface" for="deviceModel">الموديل <span class="text-error">*</span></label>
+        <input class="w-full bg-surface border border-outline rounded-lg px-md py-sm font-body-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-left" dir="ltr" id="deviceModel" name="deviceModel" placeholder="مثال: iPhone 15 Pro Max" required type="text"/>
+      </div>
+    </fieldset>
+
+    <!-- Divider -->
+    <div class="lg:col-span-12 border-t border-outline-variant my-xs"></div>
+
+    <!-- Section 3: Financial Details -->
+    <fieldset class="lg:col-span-12 flex flex-col gap-lg bg-surface-container p-md rounded-xl border border-primary/20">
+      <div class="flex justify-between items-center border-b border-outline-variant pb-sm mb-sm">
+        <h3 class="font-title-sm text-title-sm text-primary flex items-center gap-sm">
+          <span class="material-symbols-outlined">calculate</span>
+          خطة التقسيط (حساب تلقائي)
+        </h3>
+        <span class="font-caption-xs text-caption-xs bg-primary-container text-on-primary-fixed px-sm py-[2px] rounded-full">الدفعة الأولى <%= settings.down_payment_percent %>% من (السعر + <%= settings.default_interest_rate %>% فائدة)، والمتبقي على <%= settings.default_months %> أشهر</span>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-md">
+        <div class="col-span-1 md:col-span-1 lg:col-span-2 flex flex-col gap-xs">
+          <label class="font-label-sm text-label-sm text-on-surface font-semibold" for="fullPrice">سعر الجهاز الكامل <span class="text-error">*</span></label>
+          <div class="relative">
+            <input class="w-full bg-surface-container-lowest border-2 border-primary rounded-lg px-md py-lg font-title-sm text-left focus:outline-none focus:ring-2 focus:ring-primary-container transition-all text-primary font-bold" dir="ltr" id="fullPrice" name="fullPrice" placeholder="0.00" required type="text" inputmode="decimal" autocomplete="off"/>
+            <span class="absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant font-label-sm"><%= settings.currency %></span>
+          </div>
+        </div>
+        <div class="col-span-1 lg:col-span-1 flex flex-col gap-xs bg-surface-container-low p-sm rounded-lg border border-outline-variant/50">
+          <label class="font-caption-xs text-caption-xs text-on-surface-variant">المدفوع في الدفعة الأولى</label>
+          <div class="font-title-sm text-title-sm text-on-surface mt-auto" id="downCalc" dir="ltr">--</div>
+        </div>
+        <div class="col-span-1 lg:col-span-1 flex flex-col gap-xs bg-surface-container-low p-sm rounded-lg border border-outline-variant/50">
+          <label class="font-caption-xs text-caption-xs text-on-surface-variant">المتبقي بعد الدفعة الأولى</label>
+          <div class="font-title-sm text-title-sm text-error mt-auto" id="financeCalc" dir="ltr">--</div>
+        </div>
+        <div class="col-span-1 lg:col-span-1 flex flex-col gap-xs bg-surface-container-low p-sm rounded-lg border border-outline-variant/50">
+          <label class="font-caption-xs text-caption-xs text-on-surface-variant">عدد الأقساط</label>
+          <div class="font-title-sm text-title-sm text-on-surface mt-auto flex items-center gap-xs">
+            <span class="material-symbols-outlined text-base">calendar_month</span> <span id="monthsCalc"><%= settings.default_months %></span> أشهر
+          </div>
+        </div>
+        <div class="col-span-1 md:col-span-2 lg:col-span-1 flex flex-col gap-xs bg-primary-container text-on-primary-fixed p-sm rounded-lg shadow-inner">
+          <label class="font-caption-xs text-caption-xs opacity-90">قيمة القسط الشهري</label>
+          <div class="font-headline-md text-headline-md font-bold mt-auto" id="monthlyCalc" dir="ltr">--</div>
+        </div>
+      </div>
+      <div class="w-full md:w-1/3 flex flex-col gap-xs mt-sm">
+        <label class="font-label-sm text-label-sm text-on-surface" for="startDate">تاريخ بداية أول قسط <span class="text-error">*</span></label>
+        <input class="w-full bg-surface-container-lowest border border-outline rounded-lg px-md py-sm font-body-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all" id="startDate" name="startDate" required type="date"/>
+      </div>
+    </fieldset>
+
+    <!-- Actions -->
+    <div class="lg:col-span-12 flex flex-col-reverse md:flex-row justify-end gap-md mt-md">
+      <a href="/rent/customers" class="px-xl py-md rounded-lg font-label-sm text-label-sm border border-outline text-secondary hover:bg-surface-container-low transition-colors font-medium text-center">إلغاء</a>
+      <button class="px-xl py-md rounded-lg font-label-sm text-label-sm bg-primary text-on-primary hover:opacity-90 shadow-sm transition-opacity font-semibold flex items-center justify-center gap-sm" type="submit">
+        <span class="material-symbols-outlined">save</span>
+        حفظ العميل وإصدار العقد
+      </button>
+    </div>
+  </form>
+</main>
+<%- include('partials/scripts') %>
+<script>
+  var settings = { down: <%= settings.down_payment_percent %>, interest: <%= settings.default_interest_rate %>, months: <%= settings.default_months %>, currency: '<%= settings.currency %>' };
+  var priceInput = document.getElementById('fullPrice');
+  function calculate() {
+    var price = parseFloat(priceInput.value) || 0;
+    var total = price * (1 + settings.interest / 100);
+    var down = total * settings.down / 100;
+    var financed = total - down;
+    var monthly = settings.months > 0 ? financed / settings.months : 0;
+    document.getElementById('downCalc').textContent = formatMoney(down) + ' ' + settings.currency;
+    document.getElementById('financeCalc').textContent = formatMoney(financed) + ' ' + settings.currency;
+    document.getElementById('monthlyCalc').textContent = formatMoney(monthly) + ' ' + settings.currency;
+  }
+  function sanitizePrice() {
+    sanitizeNumber(priceInput);
+    calculate();
+  }
+  priceInput.addEventListener('input', sanitizePrice);
+  priceInput.addEventListener('change', sanitizePrice);
+  calculate();
+
+  document.getElementById('addCustomerForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    sanitizeNumber(priceInput);
+    var form = e.target;
+    var data = {};
+    new FormData(form).forEach(function (value, key) { data[key] = value; });
+    fetch('/api/customers', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, body: j }; }); })
+      .then(function (res) {
+        if (res.ok) { window.location.href = res.body.redirect; }
+        else { showToast(res.body.error || 'حدث خطأ', 'error'); }
+      })
+      .catch(function () { showToast('حدث خطأ في الاتصال', 'error'); });
+  });
+</script>
+</body>
+</html>

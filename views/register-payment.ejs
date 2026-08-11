@@ -1,0 +1,189 @@
+<%- include('partials/head', { title: 'تسجيل دفعة' }) %>
+<body class="bg-background text-on-background flex h-screen overflow-hidden">
+<%- include('partials/sidebar', { active: active }) %>
+<main class="flex-1 md:mr-[280px] flex flex-col h-full bg-background overflow-y-auto">
+  <%- include('partials/header', { pageTitle: 'تسجيل دفعة قسط' }) %>
+  <div class="p-margin max-w-4xl mx-auto w-full">
+    <div class="mb-lg">
+      <h2 class="font-headline-md text-headline-md text-on-surface mb-sm">تسجيل دفعة قسط</h2>
+      <p class="font-body-md text-body-md text-on-surface-variant">أدخل تفاصيل الدفعة لتحديث حالة القسط تلقائياً.</p>
+    </div>
+
+    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg shadow-sm mb-margin">
+      <!-- Customer Search -->
+      <div class="mb-md">
+        <label class="block font-label-sm text-label-sm text-on-surface mb-xs" for="customerSearch">العميل (البحث)</label>
+        <div class="relative">
+          <span class="material-symbols-outlined absolute right-3 top-2.5 text-outline">search</span>
+          <input class="w-full pl-sm pr-xl py-sm border border-outline-variant rounded-lg font-body-md text-body-md bg-surface-bright focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors" id="customerSearch" placeholder="ابحث باسم العميل أو رقم الهوية" type="text" value="<%= q %>" autocomplete="off"/>
+        </div>
+        <div id="searchResults" class="hidden mt-sm bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden shadow-sm"></div>
+      </div>
+
+      <!-- Selected Customer Info -->
+      <div id="customerInfo" class="<%= customer ? '' : 'hidden' %> mb-md">
+        <% if (customer) { %>
+        <div class="flex items-center justify-between p-md bg-surface-container rounded-lg border border-outline-variant">
+          <div class="flex items-center gap-sm">
+            <span class="material-symbols-outlined text-primary">person</span>
+            <div>
+              <span class="block font-label-sm text-label-sm text-on-surface"><%= customer.name %></span>
+              <span class="font-caption-xs text-caption-xs text-secondary" dir="ltr"><%= customer.phone %></span>
+            </div>
+          </div>
+          <a href="/rent/customers/<%= customer.id %>" class="text-primary font-label-sm text-label-sm hover:underline">عرض التفاصيل</a>
+        </div>
+        <% } %>
+      </div>
+
+      <!-- Current Due Installment -->
+      <div class="bg-surface-container p-md rounded-lg mb-md flex flex-col sm:flex-row justify-between items-start sm:items-center border border-outline-variant" id="dueBox">
+        <div>
+          <span class="block font-label-sm text-label-sm text-secondary mb-xs">القسط الحالي المستحق</span>
+          <span class="block font-title-sm text-title-sm text-on-surface" id="dueDate"><%= due ? helpers.fmtDate(due.due_date) : '—' %></span>
+        </div>
+        <div class="mt-sm sm:mt-0 text-right">
+          <span class="block font-label-sm text-label-sm text-secondary mb-xs">المبلغ المستحق</span>
+          <span class="block font-display-lg-mobile text-display-lg-mobile font-bold text-primary" id="dueAmount"><%= due ? helpers.fmtMoney(due.amount, settings.currency) : '—' %></span>
+        </div>
+      </div>
+
+      <form id="paymentForm">
+        <input type="hidden" id="customerId" name="customerId" value="<%= customer ? customer.id : '' %>"/>
+        <input type="hidden" id="installmentId" name="installmentId" value="<%= due ? due.id : '' %>"/>
+        <input type="hidden" id="contractId" name="contractId" value="<%= contract ? contract.id : '' %>"/>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-md mb-md">
+          <div>
+            <label class="block font-label-sm text-label-sm text-on-surface mb-xs" for="paidAmount">المبلغ المدفوع</label>
+            <input class="w-full px-sm py-sm border border-outline-variant rounded-lg font-body-md text-body-md bg-surface-bright focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors" id="paidAmount" name="amount" type="text" inputmode="decimal" autocomplete="off" value="<%= due ? (due.amount - due.paid_amount).toFixed(2) : '' %>"/>
+          </div>
+          <div>
+            <label class="block font-label-sm text-label-sm text-on-surface mb-xs" for="paymentDate">تاريخ الدفع</label>
+            <input class="w-full px-sm py-sm border border-outline-variant rounded-lg font-body-md text-body-md bg-surface-bright focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-colors" id="paymentDate" name="paymentDate" type="date" value="<%= new Date().toISOString().slice(0, 10) %>"/>
+          </div>
+        </div>
+
+        <div class="mb-lg">
+          <span class="block font-label-sm text-label-sm text-on-surface mb-sm">طريقة الدفع</span>
+          <div class="flex gap-md">
+            <label class="flex items-center gap-xs cursor-pointer">
+              <input class="text-primary focus:ring-primary h-4 w-4 border-outline-variant" name="method" type="radio" value="cash"/>
+              <span class="font-body-md text-body-md text-on-surface-variant">كاش</span>
+            </label>
+            <label class="flex items-center gap-xs cursor-pointer">
+              <input checked class="text-primary focus:ring-primary h-4 w-4 border-outline-variant" name="method" type="radio" value="bank_transfer"/>
+              <span class="font-body-md text-body-md text-on-surface-variant">تحويل بنكي</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-sm mt-xl pt-md border-t border-outline-variant">
+          <a href="/rent/dashboard">
+            <button class="px-lg py-sm border border-outline text-secondary rounded-lg font-label-sm text-label-sm hover:bg-surface-container transition-colors" type="button">إلغاء</button>
+          </a>
+          <button class="px-lg py-sm bg-primary text-on-primary rounded-lg font-label-sm text-label-sm font-bold shadow-sm hover:opacity-90 transition-opacity" type="submit">تأكيد الدفع</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="flex items-center justify-center p-md text-secondary text-caption-xs font-caption-xs">
+      <span class="material-symbols-outlined mr-xs text-sm">info</span>
+      يتم تحديث حالة القسط إلى "مدفوع" تلقائياً بعد التأكيد.
+    </div>
+  </div>
+</main>
+<%- include('partials/scripts') %>
+<script>
+  var selectedCustomer = <%= customer ? customer.id : 'null' %>;
+  var selectedInstallment = <%= due ? due.id : 'null' %>;
+  var selectedContract = <%= contract ? contract.id : 'null' %>;
+  var currency = '<%= settings.currency %>';
+
+  function selectCustomer(c) {
+    selectedCustomer = c.id;
+    document.getElementById('customerId').value = c.id;
+    document.getElementById('customerSearch').value = c.name;
+    document.getElementById('searchResults').classList.add('hidden');
+    document.getElementById('customerInfo').innerHTML =
+      '<div class="flex items-center justify-between p-md bg-surface-container rounded-lg border border-outline-variant">' +
+      '<div class="flex items-center gap-sm"><span class="material-symbols-outlined text-primary">person</span>' +
+      '<div><span class="block font-label-sm text-label-sm text-on-surface">' + escapeHtml(c.name) + '</span>' +
+      '<span class="font-caption-xs text-caption-xs text-secondary" dir="ltr">' + escapeHtml(c.phone) + '</span></div></div>' +
+      '<a href="/rent/customers/' + c.id + '" class="text-primary font-label-sm text-label-sm hover:underline">عرض التفاصيل</a></div>';
+    document.getElementById('customerInfo').classList.remove('hidden');
+    fetch('/rent/register-payment/customer/' + c.id).then(function (r) { return r.json(); }).then(function (j) {
+      if (j.due) {
+        selectedInstallment = j.due.id;
+        selectedContract = j.contract ? j.contract.id : null;
+        document.getElementById('installmentId').value = j.due.id;
+        document.getElementById('contractId').value = selectedContract;
+        document.getElementById('dueDate').textContent = new Date(j.due.due_date).toLocaleDateString('ar-SA-u-ca-gregory', { year: 'numeric', month: 'long', day: 'numeric' });
+        document.getElementById('dueAmount').textContent = formatMoney(j.due.amount) + ' ' + currency;
+        document.getElementById('paidAmount').value = (j.due.amount - j.due.paid_amount).toFixed(2);
+      } else {
+        document.getElementById('dueDate').textContent = '—';
+        document.getElementById('dueAmount').textContent = '—';
+      }
+    });
+  }
+
+  var searchInput = document.getElementById('customerSearch');
+  var resultsBox = document.getElementById('searchResults');
+  var debounceTimer;
+  var paidAmountInput = document.getElementById('paidAmount');
+  function sanitizePaidAmount() { sanitizeNumber(paidAmountInput); }
+  paidAmountInput.addEventListener('input', sanitizePaidAmount);
+  paidAmountInput.addEventListener('change', sanitizePaidAmount);
+  searchInput.addEventListener('input', function () {
+    clearTimeout(debounceTimer);
+    var q = searchInput.value.trim();
+    if (q.length < 2) { resultsBox.classList.add('hidden'); resultsBox.innerHTML = ''; return; }
+    debounceTimer = setTimeout(function () {
+      fetch('/rent/register-payment/search?q=' + encodeURIComponent(q)).then(function (r) { return r.json(); }).then(function (list) {
+        resultsBox.innerHTML = '';
+        if (list.length === 0) {
+          resultsBox.innerHTML = '<div class="p-md text-secondary text-center font-body-md text-body-md">لا توجد نتائج</div>';
+        }
+        list.forEach(function (c) {
+          var row = document.createElement('button');
+          row.type = 'button';
+          row.className = 'w-full text-right p-md hover:bg-surface-container transition-colors flex items-center gap-sm border-b border-outline-variant last:border-none';
+          row.innerHTML = '<span class="material-symbols-outlined text-on-surface-variant">person</span>' +
+            '<div><span class="block font-label-sm text-label-sm text-on-surface">' + escapeHtml(c.name) + '</span>' +
+            '<span class="font-caption-xs text-caption-xs text-secondary" dir="ltr">' + escapeHtml(c.phone) + ' • ' + escapeHtml(c.national_id || '') + '</span></div>';
+          row.onclick = function () { selectCustomer(c); };
+          resultsBox.appendChild(row);
+        });
+        resultsBox.classList.remove('hidden');
+      });
+    }, 300);
+  });
+
+  document.getElementById('paymentForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!selectedCustomer) { showToast('يرجى اختيار عميل أولاً', 'error'); return; }
+    if (!selectedInstallment) { showToast('لا يوجد قسط مستحق لهذا العميل', 'error'); return; }
+    sanitizeNumber(paidAmountInput);
+    var data = {
+      customerId: selectedCustomer,
+      installmentId: selectedInstallment,
+      contractId: selectedContract,
+      amount: parseFloat(paidAmountInput.value),
+      paymentDate: document.getElementById('paymentDate').value,
+      method: document.querySelector('input[name="method"]:checked').value
+    };
+    fetch('/api/payments', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, body: j }; }); })
+      .then(function (res) {
+        if (res.ok) { window.location.href = res.body.redirect; }
+        else { showToast(res.body.error || 'حدث خطأ', 'error'); }
+      })
+      .catch(function () { showToast('حدث خطأ في الاتصال', 'error'); });
+  });
+</script>
+</body>
+</html>
