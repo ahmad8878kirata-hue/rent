@@ -466,18 +466,16 @@
                 <div>
                   <h4 class="font-title-sm text-title-sm font-bold mb-md">تواصل معنا</h4>
                   <ul class="space-y-sm font-body-md text-body-md text-on-primary/80">
-                    <li class="flex items-center gap-sm"><span
-                        class="material-symbols-outlined text-[18px]">call</span><span dir="ltr">800 123 4567</span>
+                    <li class="flex items-center gap-sm"><a href="tel:+963935086565"
+                        class="flex items-center gap-sm hover:text-primary-fixed transition-colors"><span
+                          class="material-symbols-outlined text-[18px]">call</span><span dir="ltr">+963 935 086
+                          565</span></a>
                     </li>
-                    <li class="flex items-center gap-sm"><span
-                        class="material-symbols-outlined text-[18px]">mail</span><span
-                        dir="ltr">info@taqseet-plus.com</span></li>
-                    <li class="flex items-center gap-sm"><span
-                        class="material-symbols-outlined text-[18px]">location_on</span><span>الرياض - حي العليا - طريق
-                        الملك فهد</span></li>
-                    <li class="flex items-center gap-sm"><span
-                        class="material-symbols-outlined text-[18px]">schedule</span><span>السبت - الخميس: 9ص -
-                        10م</span></li>
+                    <li class="flex items-center gap-sm"><a href="https://wa.me/963935086565" target="_blank"
+                        rel="noopener" class="flex items-center gap-sm hover:text-primary-fixed transition-colors"><span
+                          class="material-symbols-outlined text-[18px]">chat</span><span dir="ltr">+963 935 086
+                          565</span></a>
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -494,7 +492,7 @@
               <script>
                 var devicesData = <%- JSON.stringify(devices).replace(new RegExp('<', 'g'), '\\u003c') %>;
                 var currency = '<%= settings.currency %>';
-                var WHATSAPP_NUMBER = '963991293755';
+                var WHATSAPP_NUMBER = '963935086565';
 
                 function orderViaWhatsApp(id) {
                   var d = devicesData.find(function (x) { return x.id === id; });
