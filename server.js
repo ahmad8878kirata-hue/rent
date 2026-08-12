@@ -665,7 +665,10 @@ app.get('/api/reports/export', (req, res) => {
 
 app.use((err, req, res, next) => {
   if (req.path.indexOf('/api/') === 0) {
-    const message = err instanceof multer.MulterError ? 'خطأ في رفع الملف: ' + err.message : (err.message || 'حدث خطأ');
+    let message = err instanceof multer.MulterError ? 'خطأ في رفع الملف: ' + err.message : (err.message || 'حدث خطأ');
+    if (err && (err.code === 'SQLITE_BUSY' || err.code === 'SQLITE_LOCKED')) {
+      message = 'قاعدة البيانات مشغولة حالياً، يرجى المحاولة بعد لحظات.';
+    }
     return res.status(400).json({ error: message });
   }
   return next(err);

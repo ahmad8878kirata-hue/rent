@@ -9,8 +9,18 @@ let conn = null;
 
 function openConnection() {
   conn = new Database(DB_PATH);
-  conn.pragma('journal_mode = WAL');
+  conn.pragma('busy_timeout = 5000');
   conn.pragma('foreign_keys = ON');
+  const wantWal = String(process.env.DB_JOURNAL_MODE || '').toLowerCase() === 'wal';
+  let journal = 'delete';
+  try {
+    const got = conn.pragma(`journal_mode = ${wantWal ? 'WAL' : 'DELETE'}`, { simple: true });
+    journal = String(got).toLowerCase();
+  } catch (e) {
+    journal = 'delete';
+    try { conn.pragma('journal_mode = DELETE'); } catch (e2) { /* ignore */ }
+  }
+  conn.pragma(`synchronous = ${journal === 'wal' ? 'NORMAL' : 'FULL'}`);
 }
 
 function initSchema() {

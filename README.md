@@ -48,7 +48,7 @@ A complete web application for managing mobile/device installment sales: custome
 | Runtime    | Node.js                                       |
 | Framework  | Express 4                                     |
 | Templating | EJS                                           |
-| Database   | SQLite via better-sqlite3 (synchronous, WAL mode) |
+| Database   | SQLite via better-sqlite3 (synchronous; rollback-journal mode by default, WAL opt-in) |
 | Uploads    | multer                                        |
 | Frontend   | Tailwind CSS (CDN), Material Symbols, vanilla JS |
 
@@ -62,7 +62,7 @@ rent/
 ├── db.js                  # SQLite connection, schema, seeding, backup/restore
 ├── helpers.js             # Shared data helpers (summaries, stats, formatting)
 ├── package.json
-├── installments.db        # SQLite database (auto-created; plus -wal/-shm files in WAL mode)
+├── installments.db        # SQLite database (auto-created; -wal/-shm files only appear if WAL is enabled)
 ├── backups/               # Automatic safety backups created before DB restore
 ├── logo/                  # Brand logos (served at /logo)
 ├── public/
@@ -277,7 +277,7 @@ The down payment is recorded as an immediate payment at contract signing, and `m
 
 ## Database & Backups
 
-The database is a single SQLite file: **`installments.db`** (WAL mode — you will also see `installments.db-wal` and `installments.db-shm` while the server runs; these are normal).
+The database is a single SQLite file: **`installments.db`**. It runs in rollback-journal (`DELETE`) mode by default, which is the most portable option for shared hosting. To opt in to WAL mode (better concurrency, only if your hosting's filesystem supports it), set the environment variable `DB_JOURNAL_MODE=wal` before starting the server.
 
 ### Export (backup)
 
@@ -305,6 +305,7 @@ After a successful import the page reloads automatically. The current data is on
 
 | Problem | Solution |
 |---------|----------|
+| `database is locked` (قاعدة البيانات مقفلة) | The server now waits up to 5s for locks and defaults to `DELETE` journal mode, so this usually appears only if the DB folder is not writable, a stale `installments.db-wal`/`installments.db-shm` lock exists, or another Node instance is running. Stop all server instances, delete any leftover `installments.db-wal` / `installments.db-shm` files, ensure the folder containing `installments.db` is writable by the app user (`chmod 775` on the dir, `chmod 666` on the DB file on Linux hosts), and restart with a single process. |
 | `EADDRINUSE` / port already in use | Another instance is running. Stop it (or its process) and start again, or run on another port: `PORT=4000 node server.js`. |
 | `Error: ... install better-sqlite3` | Run `npm install` again, or `npm rebuild better-sqlite3`. Ensure Node is recent (≥ 18). |
 | Page shows "الصفحة التي تبحث عنها غير موجودة" (404) after adding a customer/payment | Make sure you're running the latest `server.js` — older versions redirected without the `/rent` prefix. Restart the server. |
